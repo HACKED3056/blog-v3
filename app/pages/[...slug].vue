@@ -1,12 +1,12 @@
 <script setup lang="ts">
 const route = useRoute()
-
 const layoutStore = useLayoutStore()
 layoutStore.setAside(['toc'])
 
+const pagePath = decodeURI(route.path)
 const { data: post } = await useAsyncData(
-	`content:${route.path}`,
-	() => queryCollection('content').path(route.path).first(),
+	`content:${pagePath}`,
+	() => queryCollection('content').path(pagePath).first(),
 )
 
 const excerpt = computed(() => post.value?.description || '')

@@ -7,7 +7,7 @@ image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_2
 categories: [技术]
 tags: [C++, C]
 recommend: 10
-path: /2026/从c到c++的过渡
+path: /2026/from-c-to-cpp
 ---
 
 # 从c到c++的过渡
