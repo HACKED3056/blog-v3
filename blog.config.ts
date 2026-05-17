@@ -1,7 +1,7 @@
 import type { FeedEntry } from "./app/types/feed"
 
 const basicConfig = {
-	title: "一个刚刚入门的pwner~，大手子ddw (≧∀ ≦)ゞ",
+	title: "HACKED",
 	subtitle: "一个刚入门的pwner",
 	// 长 description 利好于 SEO
 	description: "一个刚入门的pwner",
