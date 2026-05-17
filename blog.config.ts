@@ -1,7 +1,7 @@
 import type { FeedEntry } from "./app/types/feed"
 
 const basicConfig = {
-	title: "HACKED",
+	title: "一个刚刚入门的pwner~，大手子ddw (≧∀ ≦)ゞ",
 	subtitle: "一个刚入门的pwner",
 	// 长 description 利好于 SEO
 	description: "一个刚入门的pwner",
@@ -91,9 +91,9 @@ const blogConfig = {
 /** 用于生成 OPML 和友链页面配置 */
 export const myFeed: FeedEntry = {
 	author: blogConfig.author.name,
-	sitenick: blogConfig.title,
-	title: blogConfig.title,
-	desc: blogConfig.subtitle || blogConfig.description,
+	sitenick: "一个刚刚入门的pwner~",
+	title: "一个刚刚入门的pwner~，大手子ddw (≧∀ ≦)ゞ",
+	desc: "大手子ddw (≧∀ ≦)ゞ",
 	link: blogConfig.url,
 	feed: new URL("/atom.xml", blogConfig.url).toString(),
 	icon: blogConfig.favicon,
