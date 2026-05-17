@@ -1,5 +1,5 @@
 ---
-title: pwn-ret2libc
+title: Pwn-ret2libc
 description: pwn-ret2libc的基础知识。
 date: 2026-05-17 01:06:11
 updated: 2026-05-17 01:06:11
