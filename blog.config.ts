@@ -7,7 +7,9 @@ const basicConfig = {
 	description: "一个刚入门的pwner",
 	author: {
 		name: "HACKED",
-		avatar: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260122090243_b_88543eaad32492c145160c259a0da882.jpg",
+		avatar: "https://q1.qlogo.cn/g?b=qq&nk=3255154997&s=640",
+	title: "ss0t_HACKED",
+	desc: "一个刚刚入门的pwner，大手子ddw",
 		email: "ss0t_HACKED@qq.com",
 		homepage: "https://blog.ss0t-hacked.top/",
 	},
@@ -91,16 +93,14 @@ const blogConfig = {
 /** 用于生成 OPML 和友链页面配置 */
 export const myFeed: FeedEntry = {
 	author: blogConfig.author.name,
-	sitenick: "一个刚刚入门的pwner~",
-	title: "一个刚刚入门的pwner~，大手子ddw (≧∀ ≦)ゞ",
-	desc: "大手子ddw (≧∀ ≦)ゞ",
 	link: blogConfig.url,
 	feed: new URL("/atom.xml", blogConfig.url).toString(),
 	icon: blogConfig.favicon,
-	avatar: blogConfig.author.avatar,
+	avatar: "https://q1.qlogo.cn/g?b=qq&nk=3255154997&s=640",
+	title: "ss0t_HACKED",
+	desc: "一个刚刚入门的pwner，大手子ddw",
 	archs: ["Nuxt", "Vercel"],
 	date: blogConfig.timeEstablished,
-	comment: "这是我自己",
 }
 
 export default blogConfig

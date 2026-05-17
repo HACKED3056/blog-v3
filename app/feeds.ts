@@ -20,7 +20,16 @@ export default [
 	{
 		name: "我的博客",
 		desc: "我的个人博客",
-		entries: [myFeed],
+		entries: [myFeed,
+			{
+				author: "HACKED的仓库",
+				title: "HACKED的仓库",
+				desc: "我的Gitee仓库",
+				link: "https://gitee.com/ASUS_HACKED",
+				icon: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260122090243_b_88543eaad32492c145160c259a0da882.jpg",
+				avatar: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260122090243_b_88543eaad32492c145160c259a0da882.jpg",
+				date: "2026-05-17",
+			},]
 	},
 	{
 		name: "CTF-Weber",

@@ -134,12 +134,16 @@ function getInspectStyle(src: string): CSSProperties {
 	}
 
 	.author {
-		overflow: hidden; // 长词折行
+		overflow: hidden;
+		white-space: nowrap;
 	}
 
 	.sitenick {
 		opacity: 0.4;
 		font-size: 0.8em;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 
 	.no-feed {
