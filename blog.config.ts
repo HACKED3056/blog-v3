@@ -20,7 +20,7 @@ const basicConfig = {
 	language: "zh-CN",
 	timeEstablished: "2026-05-17",
 	timeZone: "Asia/Shanghai",
-	url: "https://www.cnblogs.com/ASUS-HACKED",
+	url: "https://blog.ss0t-hacked.top",
 	defaultCategory: "未分类",
 }
 
