@@ -85,8 +85,8 @@ const blogConfig = {
 
 	/** 自己部署的 Twikoo 服务 */
 	twikoo: {
-		envId: "https://twikoo.example.site/",
-		preload: "https://twikoo.example.site/",
+		envId: "https://twikoo-sepia-gamma.vercel.app/",
+		preload: "https://twikoo-sepia-gamma.vercel.app/",
 	},
 }
 
