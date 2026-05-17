@@ -60,6 +60,7 @@ export default defineAppConfig({
 			{ icon: 'tabler:home', text: '个人主页', url: blogConfig.author.homepage },
 			{ icon: 'ri:qq-line', text: 'QQ: 3255154997', url: 'https://qm.qq.com/cgi-bin/qm/qr?k=3255154997' },
 			{ icon: 'tabler:brand-github', text: 'GitHub: HACKED3056', url: 'https://github.com/HACKED3056' },
+			{ icon: 'simple-icons:gitee', text: 'Gitee: ASUS_HACKED', url: 'https://gitee.com/ASUS_HACKED' },
 			{ icon: 'tabler:rss', text: 'Atom订阅', url: '/atom.xml' },
 		] satisfies NavItem[],
 		/** 页脚站点地图 */
@@ -74,6 +75,7 @@ export default defineAppConfig({
 				title: '社交',
 				items: [
 					{ icon: 'tabler:brand-github', text: 'HACKED3056', url: 'https://github.com/HACKED3056' },
+					{ icon: 'simple-icons:gitee', text: 'ASUS_HACKED', url: 'https://gitee.com/ASUS_HACKED' },
 					{ icon: 'ri:qq-line', text: 'QQ: 3255154997', url: 'https://qm.qq.com/cgi-bin/qm/qr?k=3255154997' },
 					{ icon: 'tabler:mail', text: blogConfig.author.email, url: `mailto:${blogConfig.author.email}` },
 				],
