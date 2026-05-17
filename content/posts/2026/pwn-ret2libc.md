@@ -3,7 +3,7 @@ title: pwn-ret2libc
 description: pwn-ret2libc的基础知识。
 date: 2026-05-17 01:06:11
 updated: 2026-05-17 01:06:11
-image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260123142048_9f05b8ba428e596429adcd9d49e4c980626510519.jpg # 封面图推荐 2:1，不含与标题重复的文字
+image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260123142048_9f05b8ba428e596429adcd9d49e4c980626510519.jpg
 categories: [安全]
 tags: [pwn]
 ---
