@@ -9,7 +9,7 @@ const basicConfig = {
 		name: "HACKED",
 		avatar: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260122090243_b_88543eaad32492c145160c259a0da882.jpg",
 		email: "ss0t_HACKED@qq.com",
-		homepage: "https://blog.yanxisishi.top/",
+		homepage: "https://blog.ss0t-hacked.top/",
 	},
 	copyright: {
 		abbr: "CC BY-NC-SA 4.0",
