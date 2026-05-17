@@ -6,6 +6,7 @@ updated: 2026-05-17 18:27:43
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260517104047_7c99f5ac-0222-4353-aab2-516d54d74aa2.png
 categories: [安全]
 tags: [skills]
+path: /2026/CTF常见的指令
 ---
 
 ## CTF常见的指令
