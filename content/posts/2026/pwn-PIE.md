@@ -3,7 +3,7 @@ title: Pwn-PIE
 description: pwn-PIE学习。
 date: 2026-05-17 18:01:55
 updated: 2026-05-17 18:01:55
-image: # 封面图推荐 2:1，不含与标题重复的文字
+image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260123142057_1.jpg
 categories: [安全]
 tags: [pwn]
 ---
