@@ -11,7 +11,8 @@ export function useToc(toc: MaybeRefOrGetter<Toc | undefined>, scrollableEl?: Ma
 
 	function flattenToc(tocTree: TocLink[], tocList: TocList[] = []) {
 		tocTree.forEach((item) => {
-			const headingEl = document.getElementById(item.id)
+			//const headingEl = document.getElementById(item.id)
+			const headingEl = typeof document !== 'undefined' ? document.getElementById(item.id) : null;
 			if (headingEl)
 				tocList.push({ id: item.id, offsetTop: headingEl.offsetTop })
 			if (item.children)

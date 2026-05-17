@@ -15,7 +15,9 @@ function pluginPath(path: string) {
 
 // 此处配置无需修改
 export default defineNuxtConfig({
+	devtools: { enabled: false },
 	app: {
+
 		head: {
 			meta: [
 				{ name: 'author', content: [blogConfig.author.name, blogConfig.author.email].filter(Boolean).join(', ') },
@@ -23,6 +25,7 @@ export default defineNuxtConfig({
 				// 此处为元数据的生成器标识，不建议修改
 				{ 'name': 'generator', 'content': `${pascalCase(packageJson.name)} ${packageJson.version}`, 'data-github-repo': packageJson.homepage },
 				{ name: 'mobile-web-app-capable', content: 'yes' },
+				{ name: 'referrer', content: 'no-referrer' },
 			],
 			link: [
 				{ rel: 'icon', href: blogConfig.favicon },
@@ -88,7 +91,6 @@ export default defineNuxtConfig({
 		'/api/stats': { prerender: true, headers: { 'Content-Type': 'application/json' } },
 		'/atom.xml': { prerender: true, headers: { 'Content-Type': 'application/xml' } },
 		'/favicon.ico': { redirect: { to: blogConfig.favicon } },
-		'/zhilu.opml': { prerender: true, headers: { 'Content-Type': 'application/xml' } },
 	},
 
 	runtimeConfig: {
