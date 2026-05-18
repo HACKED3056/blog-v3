@@ -9,9 +9,9 @@ tags: [skills]
 path: /2026/ctf-commands
 ---
 
-## CTF常见的指令
+### CTF常见的指令
 
-## tshark常见命令
+### tshark常见命令
 
 基础的“读、滤、存”
 
@@ -98,7 +98,7 @@ CTF 抢分“神技”
 
 
 
-## binwalk常见命令
+### binwalk常见命令
 
 **第一招：基础扫描（照 X 光）**
 
@@ -173,7 +173,7 @@ binwalk -E filename.bin
 
 
 
-## linux常用命令
+### linux常用命令
 
 **零基础必会的 Linux 核心命令清单（CTF 实战版）**
 
@@ -262,7 +262,7 @@ binwalk -E filename.bin
 
 ---
 
-## formost提取指令
+### formost提取指令
 
 ```bash
 foremost -i <输入文件名> -o <输出目录>
@@ -309,7 +309,7 @@ foremost -i <输入文件名> -o <输出目录>
 
 
 
-## zsteg指令
+### zsteg指令
 
 **1. 核心指令：一键扫描**
 
@@ -351,7 +351,7 @@ zsteg <文件名.png>
 Bash
 
 ```
-# 将提取出的数据重定向到本地文件
+## 将提取出的数据重定向到本地文件
 zsteg -e b1,rgb,lsb,xy input.png > secret.zip
 ```
 
@@ -367,7 +367,7 @@ zsteg -e b1,rgb,lsb,xy input.png > secret.zip
 
 ---
 
-## outguess解密
+### outguess解密
 
 ```bash
 outguess -k '密钥' -r <带隐写的图片.jpg> <输出的文件名.txt>
@@ -382,10 +382,10 @@ outguess -k '密钥' -r <带隐写的图片.jpg> <输出的文件名.txt>
 **示例：**
 
 ```Bash
-# 有密码的情况
+## 有密码的情况
 outguess -k 'gogogo' -r mi.jpg flag.txt
 
-# 没密码的情况（纯盲猜）
+## 没密码的情况（纯盲猜）
 outguess -r mi.jpg flag.txt
 ```
 
@@ -404,13 +404,13 @@ outguess -r mi.jpg flag.txt
 
 ----
 
-## 键盘流量解析脚本
+### 键盘流量解析脚本
 
 ```python
-# -*- coding: utf-8 -*-
+## -*- coding: utf-8 -*-
 import os
 
-# Universal HID Mapping
+## Universal HID Mapping
 normal_map = {
     0x04:"a", 0x05:"b", 0x06:"c", 0x07:"d", 0x08:"e", 0x09:"f", 0x0a:"g", 0x0b:"h", 0x0c:"i", 0x0d:"j", 0x0e:"k", 0x0f:"l", 0x10:"m", 0x11:"n", 0x12:"o", 0x13:"p", 0x14:"q", 0x15:"r", 0x16:"s", 0x17:"t", 0x18:"u", 0x19:"v", 0x1a:"w", 0x1b:"x", 0x1c:"y", 0x1d:"z",
     0x1e:"1", 0x1f:"2", 0x20:"3", 0x21:"4", 0x22:"5", 0x23:"6", 0x24:"7", 0x25:"8", 0x26:"9", 0x27:"0", 0x28:"\n", 0x2c:" ", 0x2d:"-", 0x2e:"=", 0x2f:"[", 0x30:"]", 0x33:";", 0x34:"'", 0x36:",", 0x37:".", 0x38:"/", 0x2a:"[BACKSPACE]", 0x39:"[CAPSLOCK]"
@@ -479,10 +479,10 @@ def solve():
 solve()
 ```
 
-## 鼠标流量解析脚本
+### 鼠标流量解析脚本
 
 ```python
-# -*- coding: gbk -*-
+## -*- coding: gbk -*-
 import matplotlib.pyplot as plt
 
 def draw_mouse(file_path):
@@ -535,7 +535,7 @@ def draw_mouse(file_path):
 draw_mouse('out.txt') # 确保文件名正确
 ```
 
-## pwndbg常用指令
+### pwndbg常用指令
 
 原生 GDB 看内存很费劲，这几个是 pwndbg 最具价值的扩充指令：
 
@@ -612,7 +612,7 @@ draw_mouse('out.txt') # 确保文件名正确
 
 
 
-## base64解码脚本
+### base64解码脚本
 
 ```python
 import base64
@@ -625,7 +625,7 @@ def decode_base64(encoded_str):
     except Exception as e:
         return f"Base64 解码失败: {e}"
 
-# 测试用例
+## 测试用例
 if __name__ == "__main__":
     b64_text = "SGVsbG8gV29ybGQh"
     print(f"Base64 编码: {b64_text}")
@@ -636,7 +636,7 @@ if __name__ == "__main__":
 
 
 
-## base32解码脚本
+### base32解码脚本
 
 ```python
 import base64
@@ -653,7 +653,7 @@ def decode_base32(encoded_str):
     except Exception as e:
         return f"Base32 解码失败: {e}"
 
-# 测试用例
+## 测试用例
 if __name__ == "__main__":
     b32_text = "JBSWY3DPEBLW64TMMQQQ===="
     print(f"Base32 编码: {b32_text}")
@@ -664,7 +664,7 @@ if __name__ == "__main__":
 
 
 
-## URL解码脚本
+### URL解码脚本
 
 ```python
 from urllib.parse import unquote
@@ -676,7 +676,7 @@ def decode_url(url_encoded_str):
     except Exception as e:
         return f"URL 解码失败: {e}"
 
-# 测试用例
+## 测试用例
 if __name__ == "__main__":
     url_text = "https%3A%2F%2Fwww.google.com%2Fsearch%3Fq%3D%E6%B5%8B%E8%AF%95"
     print(f"URL 编码: {url_text}")
@@ -687,7 +687,7 @@ if __name__ == "__main__":
 
 
 
-## 进制转化脚本
+### 进制转化脚本
 
 ```python
 def convert_base(num_str, from_base, to_base):
@@ -714,7 +714,7 @@ def convert_base(num_str, from_base, to_base):
     except ValueError:
         return "转换失败：输入的数字或进制不合法"
 
-# 测试用例
+## 测试用例
 if __name__ == "__main__":
     # 将十六进制的 FF 转换为二进制
     hex_val = "FF"

