@@ -4,7 +4,7 @@ description: pwn-第4部分ret2shellcode基础知识
 date: 2026-05-18 11:59:04
 updated: 2026-05-18 11:59:04
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260518052358_813ddd1fbdddfd091b23899281826d1b74e3ea87_raw.jpg
-categories: [安全]
+categories: [pwn]
 tags: [ret2shellcode, pwn, 栈溢出]
 recommend: 10
 ---

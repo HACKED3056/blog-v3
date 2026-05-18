@@ -4,7 +4,7 @@ description: pwn-第1部分栈溢出
 date: 2026-05-18 12:09:37
 updated: 2026-05-18 12:09:37
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260518052358_f24c3ec431c9714451d392a97b452f5e2ba79818_raw.jpg
-categories: [安全]
+categories: [pwn]
 tags: [栈溢出, pwn]
 recommend: 10
 path: /2026/pwn-stack-overflow

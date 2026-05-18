@@ -4,7 +4,7 @@ description: pwn-第3部分Canary保护
 date: 2026-05-18 13:08:21
 updated: 2026-05-18 13:08:21
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260518052357_f9dcd100baa1cd11728b19b5f745dffcc3cec3fd8755.jpg
-categories: [安全]
+categories: [pwn]
 tags: [Canary, 栈溢出, pwn]
 recommend: 10
 ---
@@ -30,7 +30,7 @@ pwn1: ELF 32-bit LSB executable, Intel 80386, dynamically linked, not stripped
 
 题目地址:
 
-**0x01 程序分析**
+#### **0x01 程序分析**
 
 **主要函数**
 
@@ -109,7 +109,7 @@ getshell:
 
 ---
 
-**0x02 思路分析**
+#### **0x02 思路分析**
 
 既然有两次输入，我们可以：
 
@@ -136,7 +136,7 @@ getshell:
 
 ---
 
-#### **格式化字符串漏洞**
+##### **格式化字符串漏洞**
 
 **为什么 `printf(buf)` 是漏洞？**
 
@@ -175,7 +175,7 @@ payload = fmtstr_payload(6, {printf_got: getshell_addr}, write_size='byte')
 
 ---
 
-#### **栈溢出时用 `send` 还是 `sendline`？**
+##### **栈溢出时用 `send` 还是 `sendline`？**
 
 这是本题最坑的细节之一。
 
@@ -217,9 +217,9 @@ payload = fmtstr_payload(6, {printf_got: getshell_addr}, write_size='byte')
 
 ---
 
-**0x05 完整 Exploit**
+#### **0x03 完整 Exploit**
 
-**方案一：格式化字符串写 GOT（推荐）**
+##### **方案一：格式化字符串写 GOT（推荐）**
 
 ```python
 from pwn import *
@@ -258,7 +258,7 @@ print(io.recvall(timeout=3).decode())
 io.close()
 ```
 
-**方案二：Leak Canary + 栈溢出**
+##### **方案二：Leak Canary + 栈溢出**
 
 ```python
 from pwn import *
@@ -293,7 +293,7 @@ io.interactive()                   # 进入交互模式，拿到 shell
 
 ---
 
-**0x06 为什么方案二里要加 `ret*3`？**
+#### **0x04 为什么方案二里要加 `ret*3`？**
 
 这个问题和**栈对齐**有关，但**仅限 64 位**。
 
@@ -309,7 +309,7 @@ io.interactive()                   # 进入交互模式，拿到 shell
 
 ---
 
-**0x07 总结**
+#### **0x05 总结**
 
 | 知识点           | 说明                                       |
 | ---------------- | ------------------------------------------ |
@@ -333,7 +333,7 @@ io.interactive()                   # 进入交互模式，拿到 shell
 
 
 
-###  [深育杯 2021] find_flag 题解 PIE
+### [深育杯 2021] find_flag 题解 PIE
 
 题目连接:https://www.nssctf.cn/problem/774
 
@@ -369,39 +369,11 @@ printf("%s", user_input);  // 安全写法
 - `%k$p`：直接打印第 k 个参数（比如 `%6$p` 打印第 6 个参数）
 - `%n`：把已输出的字节数写入某个地址（用于任意写，本题不用）
 
----
 
-> 什么是栈溢出？
-
-程序用 `gets()` 这类不安全函数读入数据时，**不检查输入长度**。如果输入超出缓冲区大小，就会覆盖栈上相邻的数据（Canary、返回地址等）。
-
-什么是 ROP（Return-Oriented Programming）？
-
-当 NX 开启后，不能在栈上直接执行代码。ROP 的思路是：利用程序中已有的指令片段（称为 gadget，比如一个单独的 `ret` 指令），把它们拼起来形成攻击链。
-
-x86-64 函数调用约定
-
-函数参数传递规则：
-
-- 第 1 个参数 → RDI 寄存器
-- 第 2 个 → RSI
-- 第 3 个 → RDX
-- 第 4 个 → RCX
-- 第 5 个 → R8
-- 第 6 个 → R9
-- 第 7 个及以后 → 栈上
-
-对于变参函数（如 `printf`），虽然只传了 1 个实参，但 `printf` 内部会根据 `%p` 的数量**按顺序去读**：第 1 个 `%p` 读 RSI，第 2 个读 RDX，第 5 个读 R9，第 6 个起读栈。
-
-什么是栈对齐（movaps 问题）？
-
-`system()` 函数内部使用了 `movaps` 指令，该指令要求 RSP 寄存器的值必须是 **16 字节对齐**（地址的末位是 0）。如果不对齐，程序会段错误（SIGSEGV）。
-
-解决办法：在跳转到目标函数前，加一个多余的 `ret` gadget，让 RSP 移动 8 字节，从而调整对齐。
 
 ---
 
-**0x01 分析程序**
+#### **0x01 分析程序**
 
 查看保护
 
@@ -429,7 +401,7 @@ PIE:        PIE enabled
 objdump -d find_flag | grep -A 100 "1333:"
 ```
 
-关键函数（地址 0x132f）分析：
+##### **关键函数（地址 0x132f）分析**
 
 ```asm
 1333: push   rbp
@@ -469,7 +441,7 @@ objdump -d find_flag | grep -A 100 "1333:"
 
 ---
 
-**辅助函数分析**
+##### **辅助函数分析**
 
 win 函数（地址 0x1229）：
 
@@ -499,11 +471,11 @@ rbp→  -0x60       -0x40        -0x8      0x0         +0x8
 
 ---
 
-**0x02 攻击思路**
+#### **0x02 攻击思路**
 
 分两步走：
 
-Step 1：泄漏 Canary 和 PIE 基址
+##### Step 1：泄漏 Canary 和 PIE 基址
 
 利用第一次输入的**格式化字符串漏洞**，用 `%p` 读取栈上的值。
 
@@ -530,7 +502,7 @@ Step 1：泄漏 Canary 和 PIE 基址
 
 
 
-Step 2：栈溢出跳转到 win 函数
+##### Step 2：栈溢出跳转到 win 函数
 
 第二次输入用 `gets(buffer2)`，构造 payload：
 
@@ -545,7 +517,7 @@ buffer2 → [  0x38 填充  ][  Canary  ][  假 RBP  ][  ret  ][  win  ]
 
 ---
 
-**0x03 编写 Exploit（逐行讲解）**
+#### **0x03 编写 Exploit（逐行讲解）**
 
 首先安装 pwntools（Python 的 PWN 工具库）：
 
@@ -571,7 +543,7 @@ p = process('./find_flag')
 # p = remote('node5.anna.nssctf.cn', 28586)  # 远程靶机
 ```
 
-第 1 步：泄露 Canary 和 PIE 基址
+##### 第 1 步：泄露 Canary 和 PIE 基址
 
 ```python
 # 等待程序输出 "Hi! What's your name? "，然后发送 payload
@@ -611,7 +583,7 @@ log.success(f"PIE base: {hex(pie_base)}")
 log.success(f"Win addr: {hex(win_addr)}")
 ```
 
-第 2 步：构造栈溢出 payload
+##### 第 2 步：构造栈溢出 payload
 
 ```python
 # 等待第二个提示
@@ -635,7 +607,7 @@ p.sendline(payload2)            # 发送 payload
 p.interactive()
 ```
 
-完整脚本
+##### 完整脚本
 
 ```python
 from pwn import *
@@ -676,7 +648,7 @@ p.interactive()
 
 ---
 
-0x04 调试辅助：用 GDB 验证
+#### 0x04 调试辅助：用 GDB 验证
 
 推荐用 GDB + pwndbg 插件来观察内存。
 
@@ -717,7 +689,7 @@ p/x 0x????...??00 & 0xff    # 结果应为 0x00，证明是 Canary
 
 ---
 
-0x05 常见问题
+#### 0x05 常见问题
 
 Q：为什么是 `%17$p` 不是别的？
 

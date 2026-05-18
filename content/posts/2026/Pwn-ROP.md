@@ -4,7 +4,7 @@ description: pwn-第2部分ROP
 date: 2026-05-17 16:12:12
 updated: 2026-05-17 16:12:12
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260223065253_12.webp
-categories: [安全]
+categories: [pwn]
 tags: [pwn]
 recommend: 10
 ---
@@ -48,7 +48,7 @@ recommend: 10
 
 ---
 
-### 4.2.1 [NISACTF 2022]ezstack
+### [NISACTF 2022]ezstack
 
 比赛链接：https://www.nssctf.cn/problem/2057
 
@@ -127,7 +127,7 @@ r.interactive()
 
 ---
 
-### 4.2.2 [GFCTF 2021]where_is_shell
+### [GFCTF 2021]where_is_shell
 
 题目连接:https://www.nssctf.cn/problem/889
 
