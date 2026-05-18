@@ -146,7 +146,7 @@ export default defineNuxtConfig({
 		'@bikariya/image-viewer',
 		'@bikariya/modals',
 		'@bikariya/shiki',
-		'@nuxt/a11y',
+		// @nuxt/a11y,
 		'@nuxt/content',
 		'@nuxt/hints',
 		'@nuxt/icon',
