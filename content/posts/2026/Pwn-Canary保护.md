@@ -4,7 +4,7 @@ description: pwn-第3部分Canary保护
 date: 2026-05-18 13:08:21
 updated: 2026-05-18 13:08:21
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260518052357_f9dcd100baa1cd11728b19b5f745dffcc3cec3fd8755.jpg
-categories: [pwn]
+categories: [pwn, 安全]
 tags: [Canary, 栈溢出, pwn]
 recommend: 10
 ---
