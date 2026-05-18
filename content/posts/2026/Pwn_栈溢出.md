@@ -1,6 +1,6 @@
 ---
-title: Pwn_栈溢出
-description: pwn-第1部分栈溢出
+title: Pwn_栈溢出ret2text
+description: pwn-第1部分栈溢出ret2text
 date: 2026-05-18 12:09:37
 updated: 2026-05-18 12:09:37
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260518052358_f24c3ec431c9714451d392a97b452f5e2ba79818_raw.jpg
@@ -10,7 +10,7 @@ recommend: 10
 path: /2026/pwn-stack-overflow
 ---
 
-## 栈溢出
+## 栈溢出-ret2text
 
 > ## 栈溢出漏洞 (Stack Buffer Overflow) 原理分析
 >
