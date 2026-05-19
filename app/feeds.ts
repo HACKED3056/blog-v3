@@ -29,7 +29,8 @@ export default [
 				icon: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260122090243_b_88543eaad32492c145160c259a0da882.jpg",
 				avatar: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260122090243_b_88543eaad32492c145160c259a0da882.jpg",
 				date: "2026-05-17",
-			},]
+			},
+		],
 	},
 	{
 		name: "CTF-Weber",
@@ -43,6 +44,15 @@ export default [
 				icon: "https://q1.qlogo.cn/g?b=qq&nk=3497863696&s=640",
 				avatar: "https://q1.qlogo.cn/g?b=qq&nk=3497863696&s=640",
 				date: "2026-05-17",
+			},
+			{
+				author: "Nxg7",
+				title: "Nxg7",
+				desc: "一个废物的web手的笔记（其实是大手子）",
+				link: "https://flowus.cn/share/fe11a674-0c86-4184-85f6-70d9b4213547",
+				icon: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260519025221_2D62E46F4EC2535B630B2F269163FE59.jpg",
+				avatar: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260519025221_2D62E46F4EC2535B630B2F269163FE59.jpg",
+				date: "2026-05-19",
 			},
 		],
 	},
