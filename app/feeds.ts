@@ -54,6 +54,15 @@ export default [
 				avatar: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260519025221_2D62E46F4EC2535B630B2F269163FE59.jpg",
 				date: "2026-05-19",
 			},
+			{
+				author: "Jasmine_Iris",
+				title: "Jasmine_Iris",
+				desc: "Lanny扶不上墙",
+				link: "https://jasmineee007.github.io/",
+				icon: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260519150910_232EC0FD0B2F41DEC744F0455B9A87F2.jpg",
+				avatar: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260519150910_232EC0FD0B2F41DEC744F0455B9A87F2.jpg",
+				date: "2026-05-19",
+			},
 		],
 	},
 ] satisfies FeedGroup[]
