@@ -1,6 +1,6 @@
 ---
 title: Pwn-ret2syscall
-description: pwn-第5部分
+description: pwn-第6部分ret2syscall学习
 date: 2026-05-21 18:37:46
 updated: 2026-05-21 18:37:46
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260521110246_e2bad22013ddfda6b490f4f33d0bbaecf23ca95b.png

