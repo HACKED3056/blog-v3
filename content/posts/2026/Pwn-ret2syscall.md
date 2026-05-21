@@ -55,7 +55,15 @@ tags: [pwn, syscall, 栈溢出]
 >
 > `Padding（填充满缓冲区直到覆盖返回地址）` + `pop rdi 的地址` + `/bin/sh 的地址` + `pop rax 的地址` + `59` + `pop rsi 的地址` + `0` + `pop rdx 的地址` + `0` + `syscall 的地址`。
 
+---
 
+### 原理动画
+
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="动画链接"}
+
+https://gitee.com/ASUS_HACKED/cybersecurity/blob/%E6%AF%94%E8%B5%9B%E9%99%84%E4%BB%B6/HACKED%E7%AC%94%E8%AE%B0pwn/%E5%8A%A8%E7%94%BB%E9%93%BE%E6%8E%A5/NSSCTF-PWN/%E6%A0%88/ret2syscall/ret2syscall_demo.html
+
+::
 
 ## [CISCN 2023 初赛]烧烤摊儿
 
