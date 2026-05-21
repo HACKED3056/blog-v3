@@ -43,6 +43,8 @@ const blogConfig = {
 			安全: { icon: "tabler:bug", color: "#ff7733" },
 			/** PWN：二进制漏洞利用/逆向工程（同时归入安全） */
 			pwn: { icon: "tabler:terminal-2", color: "#cc44ff" },
+			/** 比赛：CTF竞赛/真题复现/WP */
+			比赛: { icon: "tabler:trophy", color: "#ffaa00" },
 			/** 思考：观点讨论/复盘反思/行业或产品观察 */
 			杂谈: { icon: "tabler:message", color: "#33bbaa" },
 			/** 记录叙事：个人经历/校园家庭/日常片段 */
