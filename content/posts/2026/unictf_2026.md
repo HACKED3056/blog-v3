@@ -4,7 +4,7 @@ description: unictf wp
 date: 2026-05-18 11:55:38
 updated: 2026-05-18 11:55:38
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260518040642_qq_pic_merged_1779077152103.jpg
-categories: [安全]
+categories: [比赛, 安全]
 tags: [unictf, misc, re, 密码]
 ---
 
