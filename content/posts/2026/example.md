@@ -2,6 +2,7 @@
 title: 组件样式示例
 date: 2024-09-21 23:18:18
 updated: 2026-04-06 17:25:03
+image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260521110247_ac23ed645d7b8c41d97ddb042d408c7a514359706.png
 aside: [toc, meta-aside-foo, meta-aside-bar]
 # type: story
 ---
