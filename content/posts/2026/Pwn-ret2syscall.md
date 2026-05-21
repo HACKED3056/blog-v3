@@ -39,17 +39,17 @@ tags: [pwn, syscall, 栈溢出]
 
 
 
-**1.寻找可用 Gadgets：**使用 ROPgadget 等工具。
+**1.寻找可用 Gadgets：使用 ROPgadget 等工具。**
 
 > 通过命令 `ROPgadget --binary ./pwn --only "pop|ret"` 寻找需要的指令片段。在 64 位下重点寻找 `pop rax ; ret`、`pop rdi ; ret`、`pop rsi ; ret`、`pop rdx ; ret`。同时，利用工具找到 `syscall`（或 `int 0x80`）指令的确切内存地址。
 
-**2.处理 /bin/sh 字符串：**寻找或动态写入。
+**2.处理 /bin/sh 字符串：寻找或动态写入。**
 
 > 先用 `ROPgadget --binary ./pwn --string "/bin/sh"` 检查程序里是否自带了该字符串。
 >
 > 如果没有，就需要再找一个类似 `mov qword ptr [rax], rdx ; ret` 的写入 Gadget，把 `/bin/sh` 的十六进制数据写入到一个固定的、可读可写的内存段（如 `.bss` 段）。
 
-**3.组装 Payload：**控制执行流。
+**3.组装 Payload:控制执行流。**
 
 > 利用 Pwntools 拼装最终的输入流：
 >
@@ -67,8 +67,8 @@ https://gitee.com/ASUS_HACKED/cybersecurity/blob/%E6%AF%94%E8%B5%9B%E9%99%84%E4%
 
 ## [CISCN 2023 初赛]烧烤摊儿
 
-::alert{type="info" title="题目地址"}
- [[CISCN 2023 初赛]烧烤摊儿]([[CISCN 2023 初赛\]烧烤摊儿 - NSSCTF](https://www.nssctf.cn/problem/4055)) 
+::alert{type="question" title="题目地址"}
+ https://www.nssctf.cn/problem/4055
 ::
 
 ### 0x01 基本信息

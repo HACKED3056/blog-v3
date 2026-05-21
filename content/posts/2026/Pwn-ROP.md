@@ -11,8 +11,6 @@ recommend: 10
 
 
 
-## PWN-ROP
-
 ---
 
 # ROP 学习笔记
@@ -89,7 +87,13 @@ payload = b'a'*72 + p32(system_addr)+p32(bin_addr)
 
 ### 32位系统下对system函数调用的不同区别
 
-动画:[HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/[NISACTF 2022\]ezstack/p32位系统system_call不同区别payload不同用法.html · 工程部Teddy Bear/网络安全 - 码云 - 开源中国](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/[NISACTF 2022]ezstack/p32位系统system_call不同区别payload不同用法.html)
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="动画链接"}
+
+https://gitee.com/ASUS_HACKED/cybersecurity/blob/%E6%AF%94%E8%B5%9B%E9%99%84%E4%BB%B6/HACKED%E7%AC%94%E8%AE%B0pwn/%E5%8A%A8%E7%94%BB%E9%93%BE%E6%8E%A5/NSSCTF-PWN/%E6%A0%88/p32%E4%BD%8D%E7%B3%BB%E7%BB%9Fsystem_call%E4%B8%8D%E5%90%8C%E5%8C%BA%E5%88%ABpayload%E4%B8%8D%E5%90%8C%E7%94%A8%E6%B3%95.html
+
+::
+
+
 
 > **32位系统下对system函数调用的不同区别**
 > 在 32 位系统里，**system** 函数处理工作时，看办公桌（**栈指针 ESP**）有严格的顺序要求：
@@ -149,9 +153,13 @@ r.interactive()
 
 ---
 
-### 垫片ret
+### 垫片ret动画
 
-[栈对齐动画](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/[SWPUCTF 2021 新生赛]gift_pwn/PWN 栈对齐.html)
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="动画链接"}
+
+https://gitee.com/ASUS_HACKED/cybersecurity/blob/%E6%AF%94%E8%B5%9B%E9%99%84%E4%BB%B6/HACKED%E7%AC%94%E8%AE%B0pwn/%E5%8A%A8%E7%94%BB%E9%93%BE%E6%8E%A5/NSSCTF-PWN/%E6%A0%88/PWN%20%E6%A0%88%E5%AF%B9%E9%BD%90.html
+
+::
 
 > **栈对齐与 ret 垫片**
 > 64 位的 **system** 函数有一道严格的安检门：进入它时，**`rsp` 的地址必须是 16 字节对齐的（末尾为 0）**。而在 ROP 链中，`rsp` 往往是错位的（末尾为 8）。如果直接跳进 `system`，程序就会因为 `movaps` 指令当场崩溃。为了弄平堆栈，我们需要强行插入一个只包含 **`ret`** 指令的地址作为垫片。
