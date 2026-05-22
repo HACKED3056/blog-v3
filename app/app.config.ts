@@ -112,6 +112,7 @@ export default defineAppConfig({
 			items: [
 				{ icon: 'tabler:files', text: '文章', url: '/' },
 				{ icon: 'tabler:link', text: '友链', url: '/link' },
+				{ icon: 'tabler:activity', text: '笔记贡献', url: '/contribution' },
 				{ icon: 'tabler:archive', text: '归档', url: '/archive' },
 			],
 		},

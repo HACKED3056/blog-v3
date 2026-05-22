@@ -3,6 +3,7 @@ import {
 	ContentRenderer,
 	LazyBlogWidget,
 	LazyWidgetArticleUpdate,
+	LazyWidgetBlogContribution,
 	LazyWidgetBlogLog,
 	LazyWidgetBlogStats,
 	LazyWidgetBlogTech,
@@ -13,6 +14,7 @@ import {
 // @keep-sorted
 const rawWidgets = {
 	LazyWidgetArticleUpdate,
+	LazyWidgetBlogContribution,
 	LazyWidgetBlogLog,
 	LazyWidgetBlogStats,
 	LazyWidgetBlogTech,
