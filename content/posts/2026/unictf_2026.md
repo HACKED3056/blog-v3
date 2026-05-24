@@ -12,6 +12,10 @@ tags: [unictf, misc, re, 密码]
 
 # Unictf WP
 
+::alert{type="question" title="题目地址"}
+[unictf 2026附件](https://gitee.com/ASUS_HACKED/cybersecurity/tree/%E6%AF%94%E8%B5%9B%E9%99%84%E4%BB%B6/Unictf)
+::
+
 ## 1.Silent Resolver
 
 附件已经上传至gitee.com/ASUS-HACKED
