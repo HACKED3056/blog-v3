@@ -65,4 +65,19 @@ export default [
 			},
 		],
 	},
+	{
+		name: "CTF-Pwner",
+		desc: "CTF-Pwner",
+		entries: [
+			{
+				author: "HFTTC",
+				title: "HFTTC",
+				desc: "偶遇100篇pwn笔记大手子",
+				link: "https://idcm-svg.github.io/HFTTC.github.io/catalog/",
+				icon: "https://github.com/idcm-svg.png",
+				avatar: "https://github.com/idcm-svg.png",
+				date: "2026-05-24",
+			},
+		],
+	},
 ] satisfies FeedGroup[]
