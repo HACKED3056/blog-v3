@@ -87,6 +87,7 @@ export default defineNuxtConfig({
 
 	// @keep-sorted
 	routeRules: {
+		"/**": { headers: { "Referrer-Policy": "no-referrer" } },
 		...mapValues(redirectList, to => ({ redirect: { to, statusCode: 308 as const } })),
 		'/api/stats': { prerender: true, headers: { 'Content-Type': 'application/json' } },
 		'/atom.xml': { prerender: true, headers: { 'Content-Type': 'application/xml' } },
