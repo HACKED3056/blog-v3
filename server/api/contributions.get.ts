@@ -1,16 +1,20 @@
 import { Temporal } from 'temporal-polyfill'
 import { toZonedTemporal } from '~~/shared/utils/time'
-import { editLog } from '../data/edit-log'
+
+// === 编辑日志（每次内容增长的记录） ===
+// nuxt.config.ts afterParse 检测到 h2/字数增长时自动更新 edit-log.json
+// 部署前运行: node -e "const e=require('./edit-log.json'); ..." 同步此数组
+const editLog: { path: string; date: string; newH2: number; charGrowth: number }[] = [
+  { path: "content/posts/2026/Pwn_ret2text.md", date: "2026-05-31", newH2: 2, charGrowth: 2303 }
+]
 
 export default defineEventHandler(async (event) => {
 	const dailyCount = new Map<string, number>()
 
-	// 编辑日志：每新增一个 ## 章节 = 1 贡献
 	for (const entry of editLog) {
 		dailyCount.set(entry.date, (dailyCount.get(entry.date) || 0) + entry.newH2)
 	}
 
-	// 文章创建日期也算贡献
 	const posts = await queryCollection(event, 'content')
 		.where('stem', 'LIKE', 'posts/%')
 		.select('date')
@@ -20,10 +24,10 @@ export default defineEventHandler(async (event) => {
 		if (!post.date) continue
 		try {
 			const d = toZonedTemporal(post.date as string)
-			const key = `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`
+			const key = d.year + "-" + String(d.month).padStart(2, "0") + "-" + String(d.day).padStart(2, "0")
 			dailyCount.set(key, (dailyCount.get(key) || 0) + 1)
 		}
-		catch { /* skip invalid */ }
+		catch { /* skip */ }
 	}
 
 	const query = getQuery(event)
@@ -40,7 +44,7 @@ export default defineEventHandler(async (event) => {
 
 	for (let i = 0; i < totalDays; i++) {
 		const d = yearStart.add({ days: i })
-		const key = `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`
+		const key = d.year + "-" + String(d.month).padStart(2, "0") + "-" + String(d.day).padStart(2, "0")
 		const count = dailyCount.get(key) || 0
 		totalCount += count
 		const level = count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : count <= 6 ? 3 : 4
