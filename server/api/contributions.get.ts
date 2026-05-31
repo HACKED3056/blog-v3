@@ -1,12 +1,6 @@
 import { Temporal } from 'temporal-polyfill'
 import { toZonedTemporal } from '~~/shared/utils/time'
-
-// === 编辑日志（每次内容增长的记录） ===
-// nuxt.config.ts afterParse 检测到 h2/字数增长时自动更新 edit-log.json
-// 部署前运行: node -e "const e=require('./edit-log.json'); ..." 同步此数组
-const editLog: { path: string; date: string; newH2: number; charGrowth: number }[] = [
-  { path: "content/posts/2026/Pwn_ret2text.md", date: "2026-05-31", newH2: 2, charGrowth: 2303 }
-]
+import { editLog } from '../data/edit-log'
 
 export default defineEventHandler(async (event) => {
 	const dailyCount = new Map<string, number>()
