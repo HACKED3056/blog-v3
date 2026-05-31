@@ -251,6 +251,14 @@ ${packageJson.homepage}
 							log.push({ path: ctx.file.path, date: dateStr, newH2, charGrowth })
 							await writeFile(logPath, JSON.stringify(log))
 
+							// 自动同步 editLog 到 API 文件
+							const apiPath = resolve(process.cwd(), 'server/api/contributions.get.ts')
+							let apiContent = await readFile(apiPath, 'utf-8')
+							apiContent = apiContent.replace(
+								/const editLog = \[[\s\S]*?\]/,
+								'const editLog = ' + JSON.stringify(log, null, 2)
+							)
+							await writeFile(apiPath, apiContent)
 							content.updated = `${dateStr} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
 						}
 					}

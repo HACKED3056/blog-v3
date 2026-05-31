@@ -152,10 +152,10 @@ function tipText(cell: { date: string; count: number }) {
 }
 
 .cell {
+  background: transparent;
   width: 100%;
   height: 100%;
   border-radius: 2px;
-  background: var(--c-border);
   transition: transform 0.12s ease;
 }
 
@@ -163,7 +163,7 @@ function tipText(cell: { date: string; count: number }) {
   transform: scale(1.35);
 }
 
-.cell.level-0 { background: var(--c-border); }
+.cell.level-0 { background: transparent; }
 .cell.level-1 { background: var(--c-contrib-1, #9be9a8); }
 .cell.level-2 { background: var(--c-contrib-2, #40c463); }
 .cell.level-3 { background: var(--c-contrib-3, #30a14e); }
@@ -180,6 +180,7 @@ function tipText(cell: { date: string; count: number }) {
 }
 
 .legend .cell {
+  background: transparent;
   width: 12px;
   height: 12px;
 }
@@ -205,7 +206,6 @@ function tipText(cell: { date: string; count: number }) {
 }
 
 .year-btn:hover:not(:disabled) {
-  background: var(--c-border);
 }
 
 .year-btn:disabled {
