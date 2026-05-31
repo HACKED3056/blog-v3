@@ -33,6 +33,6 @@ const src = computed(() => {
 	:is="ImageComponent"
 	:src :alt :width :height :densities
 	:style="{ filter }"
-	:referrerpolicy="mirror ? 'no-referrer' : undefined"
+	:referrerpolicy="src.startsWith('http') ? 'no-referrer' : undefined"
 />
 </template>

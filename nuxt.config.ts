@@ -294,7 +294,7 @@ ${packageJson.homepage}
 		format: ['avif', 'webp'],
 		// Neylify 下 netlify 处理器无法显示站外图片，ipx 处理器无法显示站内图片，需彻底禁用
 		// https://github.com/nuxt/image/issues/1353
-		provider: NETLIFY ? 'none' : undefined,
+		provider: 'none',
 	},
 
 	linkChecker: {
