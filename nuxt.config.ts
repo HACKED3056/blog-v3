@@ -218,19 +218,19 @@ ${packageJson.homepage}
 					const hash = createHash('sha256').update(raw).digest('hex')
 					const h2Count = (text.match(/^## /gm) || []).length
 					const charCount = text.length
+					const stem = content.stem
 
 					const cachePath = resolve(process.cwd(), '.content-cache.json')
 					let cache: Record<string, { hash: string; h2Count: number; charCount: number }> = {}
 					try { cache = JSON.parse(await readFile(cachePath, 'utf-8')) }
-					catch { /* first run */ }
+					catch { /* 首次运行 */ }
 
-					// compat: old format {path: "hash"} -> {path: {hash, h2Count, charCount}}
-					const prevRaw = cache[ctx.file.path]
+					const prevRaw = cache[stem]
 					const prev = typeof prevRaw === 'object' && prevRaw !== null ? prevRaw : { hash: typeof prevRaw === 'string' ? prevRaw : '', h2Count: 0, charCount: 0 }
 
 					const changed = prev.hash !== hash
 
-					cache[ctx.file.path] = { hash, h2Count, charCount }
+					cache[stem] = { hash, h2Count, charCount }
 					await writeFile(cachePath, JSON.stringify(cache, null, 2))
 
 					if (changed) {
@@ -248,17 +248,27 @@ ${packageJson.homepage}
 							try { log = JSON.parse(await readFile(logPath, 'utf-8')) }
 							catch { /* first run */ }
 
-							log.push({ path: ctx.file.path, date: dateStr, newH2, charGrowth })
+							log.push({ path: stem, date: dateStr, newH2, charGrowth })
 							await writeFile(logPath, JSON.stringify(log))
 
-							// 自动同步 editLog 到 API 文件
+							// 同步更新 API 文件内联数组
 							const apiPath = resolve(process.cwd(), 'server/api/contributions.get.ts')
-							let apiContent = await readFile(apiPath, 'utf-8')
-							apiContent = apiContent.replace(
-								/const editLog = \[[\s\S]*?\]/,
-								'const editLog = ' + JSON.stringify(log, null, 2)
-							)
-							await writeFile(apiPath, apiContent)
+							let apiText = await readFile(apiPath, 'utf-8')
+							const startMark = '// @edit-log-start'
+							const endMark = '// @edit-log-end'
+							const startIdx = apiText.indexOf(startMark)
+							const endIdx = apiText.indexOf(endMark)
+							if (startIdx >= 0 && endIdx >= 0) {
+								const before = apiText.slice(0, startIdx + startMark.length)
+								const after = apiText.slice(endIdx)
+								const jsonStr = JSON.stringify(log, null, 4)
+									.split('\n')
+									.map((l, i) => i === 0 ? l : '\t' + l)
+									.join('\n')
+								apiText = before + '\n' + jsonStr + '\n' + after
+								await writeFile(apiPath, apiText)
+							}
+
 							content.updated = `${dateStr} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
 						}
 					}

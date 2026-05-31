@@ -1,9 +1,17 @@
 import { Temporal } from "temporal-polyfill"
 import { toZonedTemporal } from "~~/shared/utils/time"
 
-const editLog = [
-  { path: "content/posts/2026/Pwn_ret2text.md", date: "2026-05-31", newH2: 2, charGrowth: 2303 }
+const editLog: { path: string; date: string; newH2: number; charGrowth: number }[] =
+// @edit-log-start
+[
+    {
+        "path": "posts/2026/Pwn_ret2text",
+        "date": "2026-05-31",
+        "newH2": 2,
+        "charGrowth": 2303
+    }
 ]
+// @edit-log-end
 
 export default defineEventHandler(async (event) => {
   const dailyCount = new Map<string, number>()
