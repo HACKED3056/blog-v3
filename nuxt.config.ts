@@ -197,13 +197,44 @@ ${packageJson.homepage}
 ================================
 `)
 		},
-		'content:file:afterParse': (ctx) => {
+		'content:file:afterParse': async (ctx) => {
 			const { permalink, path } = ctx.content as Record<string, string | undefined>
 			// 优先使用自定义链接（permalink/abbrlink），其次隐藏基于文件路由的 URL 中的 /posts 前缀
 			if (permalink)
 				ctx.content.path = permalink
 			else if (blogConfig.article.hidePostPrefix && path?.startsWith('/posts/'))
 				ctx.content.path = path.slice('/posts'.length)
+
+			// 通过内容 hash 检测实际变更后自动更新 updated 字段
+			const content = ctx.content as Record<string, any>
+			if (content.stem?.startsWith('posts/') && ctx.file?.path) {
+				try {
+					const { stat, readFile, writeFile } = await import('node:fs/promises')
+					const { createHash } = await import('node:crypto')
+					const { resolve } = await import('node:path')
+
+					const raw = await readFile(ctx.file.path)
+					const hash = createHash('sha256').update(raw).digest('hex')
+
+					const cachePath = resolve(process.cwd(), '.content-cache.json')
+					let cache: Record<string, string> = {}
+					try { cache = JSON.parse(await readFile(cachePath, 'utf-8')) }
+					catch { /* 首次运行或无缓存文件 */ }
+
+					const prevHash = cache[ctx.file.path] || ''
+					const changed = hash !== prevHash
+
+					cache[ctx.file.path] = hash
+					await writeFile(cachePath, JSON.stringify(cache, null, 2))
+
+					if (changed) {
+						const mtime = (await stat(ctx.file.path)).mtime
+						const pad = (n: number) => String(n).padStart(2, '0')
+						content.updated = `${mtime.getFullYear()}-${pad(mtime.getMonth() + 1)}-${pad(mtime.getDate())} ${pad(mtime.getHours())}:${pad(mtime.getMinutes())}:${pad(mtime.getSeconds())}`
+					}
+				}
+				catch { /* skip on errors */ }
+			}
 		},
 	},
 

