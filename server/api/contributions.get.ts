@@ -1,14 +1,12 @@
 import { Temporal } from 'temporal-polyfill'
 import { toZonedTemporal } from '~~/shared/utils/time'
-import editLogData from '~~/edit-log.json'
+import { editLog } from '../data/edit-log'
 
 export default defineEventHandler(async (event) => {
 	const dailyCount = new Map<string, number>()
 
-	// 编辑日志：每次内容增长的记录
-	const editLog = (Array.isArray(editLogData) ? editLogData : []) as { path: string; date: string; newH2: number; charGrowth: number }[]
+	// 编辑日志：每新增一个 ## 章节 = 1 贡献
 	for (const entry of editLog) {
-		// 每新增一个 ## 章节 = 1 贡献
 		dailyCount.set(entry.date, (dailyCount.get(entry.date) || 0) + entry.newH2)
 	}
 

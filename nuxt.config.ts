@@ -251,6 +251,18 @@ ${packageJson.homepage}
 							log.push({ path: ctx.file.path, date: dateStr, newH2, charGrowth })
 							await writeFile(logPath, JSON.stringify(log))
 
+							// 同步更新 TS 模块供 Nitro 打包
+							const tsPath = resolve(process.cwd(), 'server/data/edit-log.ts')
+							const tsContent = `export interface EditLogEntry {
+  path: string
+  date: string
+  newH2: number
+  charGrowth: number
+}
+
+export const editLog: EditLogEntry[] = ${JSON.stringify(log, null, 2)}
+`
+							await writeFile(tsPath, tsContent)
 							content.updated = `${dateStr} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
 						}
 					}
