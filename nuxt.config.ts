@@ -205,7 +205,7 @@ ${packageJson.homepage}
 			else if (blogConfig.article.hidePostPrefix && path?.startsWith('/posts/'))
 				ctx.content.path = path.slice('/posts'.length)
 
-			// 通过内容 hash 检测实际变更后自动更新 updated 字段
+			// 通过内容 hash 检测实际变更，追踪内容增长贡献
 			const content = ctx.content as Record<string, any>
 			if (content.stem?.startsWith('posts/') && ctx.file?.path) {
 				try {
@@ -214,30 +214,51 @@ ${packageJson.homepage}
 					const { resolve } = await import('node:path')
 
 					const raw = await readFile(ctx.file.path)
+					const text = raw.toString()
 					const hash = createHash('sha256').update(raw).digest('hex')
+					const h2Count = (text.match(/^## /gm) || []).length
+					const charCount = text.length
 
 					const cachePath = resolve(process.cwd(), '.content-cache.json')
-					let cache: Record<string, string> = {}
+					let cache: Record<string, { hash: string; h2Count: number; charCount: number }> = {}
 					try { cache = JSON.parse(await readFile(cachePath, 'utf-8')) }
-					catch { /* 首次运行或无缓存文件 */ }
+					catch { /* first run */ }
 
-					const prevHash = cache[ctx.file.path] || ''
-					const changed = hash !== prevHash
+					// compat: old format {path: "hash"} -> {path: {hash, h2Count, charCount}}
+					const prevRaw = cache[ctx.file.path]
+					const prev = typeof prevRaw === 'object' && prevRaw !== null ? prevRaw : { hash: typeof prevRaw === 'string' ? prevRaw : '', h2Count: 0, charCount: 0 }
 
-					cache[ctx.file.path] = hash
+					const changed = prev.hash !== hash
+
+					cache[ctx.file.path] = { hash, h2Count, charCount }
 					await writeFile(cachePath, JSON.stringify(cache, null, 2))
 
 					if (changed) {
-						const mtime = (await stat(ctx.file.path)).mtime
-						const pad = (n: number) => String(n).padStart(2, '0')
-						content.updated = `${mtime.getFullYear()}-${pad(mtime.getMonth() + 1)}-${pad(mtime.getDate())} ${pad(mtime.getHours())}:${pad(mtime.getMinutes())}:${pad(mtime.getSeconds())}`
+						const newH2 = Math.max(0, h2Count - prev.h2Count)
+						const charGrowth = Math.max(0, charCount - prev.charCount)
+						const hasGrowth = newH2 > 0 || charGrowth > 50
+
+						if (hasGrowth) {
+							const now = new Date()
+							const pad = (n: number) => String(n).padStart(2, '0')
+							const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+
+							const logPath = resolve(process.cwd(), 'edit-log.json')
+							let log: { path: string; date: string; newH2: number; charGrowth: number }[] = []
+							try { log = JSON.parse(await readFile(logPath, 'utf-8')) }
+							catch { /* first run */ }
+
+							log.push({ path: ctx.file.path, date: dateStr, newH2, charGrowth })
+							await writeFile(logPath, JSON.stringify(log))
+
+							content.updated = `${dateStr} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
+						}
 					}
 				}
 				catch { /* skip on errors */ }
 			}
 		},
 	},
-
 	icon: {
 		customCollections: [
 			{ prefix: 'zi', dir: './app/assets/icons' },

