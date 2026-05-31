@@ -1,22 +1,16 @@
 import { Temporal } from 'temporal-polyfill'
 import { toZonedTemporal } from '~~/shared/utils/time'
+import editLogData from '~~/edit-log.json'
 
 export default defineEventHandler(async (event) => {
-	// 读取编辑日志（每次内容增长的记录）
 	const dailyCount = new Map<string, number>()
-	try {
-		const { readFile } = await import('node:fs/promises')
-		const { resolve } = await import('node:path')
-		const logPath = resolve(process.cwd(), 'edit-log.json')
-		const editLog = JSON.parse(await readFile(logPath, 'utf-8')) as { path: string; date: string; newH2: number; charGrowth: number }[]
 
-		for (const entry of editLog) {
-			// 每新增一个 ## = 1 贡献，每增 200 字 = 1 贡献
-			const points = entry.newH2 + Math.ceil(entry.charGrowth / 500)
-			dailyCount.set(entry.date, (dailyCount.get(entry.date) || 0) + points)
-		}
+	// 编辑日志：每次内容增长的记录
+	const editLog = (Array.isArray(editLogData) ? editLogData : []) as { path: string; date: string; newH2: number; charGrowth: number }[]
+	for (const entry of editLog) {
+		// 每新增一个 ## 章节 = 1 贡献
+		dailyCount.set(entry.date, (dailyCount.get(entry.date) || 0) + entry.newH2)
 	}
-	catch { /* 尚无编辑日志 */ }
 
 	// 文章创建日期也算贡献
 	const posts = await queryCollection(event, 'content')
