@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
 	for (const post of posts) {
 		// 重复路径检测
-		if (post.draft) continue
+		if (post.stats === false) continue
 		if (existedPath.has(post.path))
 			console.warn('文章存在重复路径', post.path)
 		existedPath.set(post.path, true)
