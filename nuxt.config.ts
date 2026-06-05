@@ -330,7 +330,7 @@ ${packageJson.homepage}
 	},
 
 	site: {
-		name: blogConfig.title,
+		name: "HACKED的小破站",
 		url: blogConfig.url,
 		defaultLocale: blogConfig.language,
 	},
