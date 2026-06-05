@@ -34,6 +34,8 @@ export default defineEventHandler(async (event) => {
 	}
 
 	for (const post of posts) {
+		// 跳过示例文章（非原创）
+		if (post.stem === 'posts/2026/example') continue
 		// 重复路径检测
 		if (existedPath.has(post.path))
 			console.warn('文章存在重复路径', post.path)
