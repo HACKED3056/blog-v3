@@ -237,7 +237,7 @@ ${packageJson.homepage}
 					if (changed) {
 						const newH2 = Math.max(0, h2Count - prev.h2Count)
 						const charGrowth = Math.max(0, charCount - prev.charCount)
-						const hasGrowth = newH2 > 0 || charGrowth > 50
+						const hasGrowth = newH2 > 0
 
 						if (hasGrowth) {
 							const now = new Date()
