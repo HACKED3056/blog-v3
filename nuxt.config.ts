@@ -205,6 +205,8 @@ ${packageJson.homepage}
 				ctx.content.path = permalink
 			else if (blogConfig.article.hidePostPrefix && path?.startsWith('/posts/'))
 				ctx.content.path = path.slice('/posts'.length)
+			// 纸鹿学姐的文章不计入字数统计
+			if (content.stem === 'posts/2026/example' && content.readingTime) content.readingTime.words = 0
 
 			// 通过内容 hash 检测实际变更，追踪内容增长贡献
 			const content = ctx.content as Record<string, any>

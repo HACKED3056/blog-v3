@@ -1,0 +1,60 @@
+│
+●  Nuxt 4.4.4 (with Nitro 2.13.4, Vite 7.3.2 and Vue 3.5.33)
+[get-port] Unable to find an available port (tried 3000 on any host). Using alternative port 3001.
+
+  ➜ Local:    http://localhost:3001/
+  ➜ Network:  use --host to expose
+
+[@nuxtjs/og-image] ℹ The module is disabled, skipping setup.
+[nuxt-seo-utils] ℹ No favicon detected. Generate icons with:
+  npx nuxt-seo-utils icons --source <your-logo.svg>
+
+[@nuxt/content]  WARN  "content/ProseImg.vue" is ignored because parsing is failed. Error: .vue files are not supported.
+
+[@nuxt/content] ✔ Processed 2 collections and 18 files in 239.06ms (17 cached, 1 parsed)
+ℹ Nuxt Icon server bundle mode is set to local
+✔ Nuxt Icon discovered local-installed 6 collections: catppuccin, devicon, line-md, ri, simple-icons, tabler
+
+ WARN  Custom icon SolarRewindBackBoldDuotone is normalized to solar-rewind-back-bold-duotone, we recommend to change the file name to match the icon name, or pass normalizeIconName: false to your custom collection options
+
+
+ WARN  Custom icon SolarRewindForwardBoldDuotone is normalized to solar-rewind-forward-bold-duotone, we recommend to change the file name to match the icon name, or pass normalizeIconName: false to your custom collection options
+
+✔ Nuxt Icon loaded local collection zi with 3 icons
+ℹ
+================================
+Clarity 3.7.0-rc.0
+https://github.com/L33Z22L11/blog-v3
+================================
+
+[nuxt] ℹ Compiled content/database.compressed.mjs in 863.91ms
+ℹ Nuxt Icon client bundle consist of 180 icons with 88.85KB(uncompressed) in size
+[nuxt] ℹ Compiled nuxt-icon-client-bundle.mjs in 1641.32ms
+[nuxt] ℹ Compiled plugins.server.mjs in 598.12ms
+[nuxt] ℹ Compiled plugins.client.mjs in 944.97ms
+[nuxt] ℹ Compiled types/plugins.d.ts in 1225.48ms
+✔ Vite client built in 184ms
+✔ Vite server built in 30ms
+
+ WARN  node_modules/.pnpm/@vueuse+core@14.3.0_vue@3.5.33_typescript@6.0.3_/node_modules/@vueuse/core/dist/index.js (3362:0): A comment
+
+"/* #__PURE__ */"
+
+in "node_modules/.pnpm/@vueuse+core@14.3.0_vue@3.5.33_typescript@6.0.3_/node_modules/@vueuse/core/dist/index.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+
+
+ WARN  node_modules/.pnpm/@vueuse+core@14.3.0_vue@3.5.33_typescript@6.0.3_/node_modules/@vueuse/core/dist/index.js (5780:22): A comment
+
+"/* #__PURE__ */"
+
+in "node_modules/.pnpm/@vueuse+core@14.3.0_vue@3.5.33_typescript@6.0.3_/node_modules/@vueuse/core/dist/index.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+
+
+ WARN  "file:///home/helloctfos/blog-v3/remark-plugins/remark-music.ts" is imported by ".nuxt/mdc-imports.mjs", but could not be resolved – treating it as an external dependency.
+
+
+ WARN  "file:///home/helloctfos/blog-v3/remark-plugins/rehype-meta-slots.ts" is imported by ".nuxt/mdc-imports.mjs", but could not be resolved – treating it as an external dependency.
+
+[nitro] ✔ Nuxt Nitro server built in 19378ms
+ℹ Vite server warmed up in 3ms
+ℹ Vite client warmed up in 13ms
