@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
   const yearStart = Temporal.PlainDate.from({ year: firstActive.year, month: firstActive.month, day: firstActive.day })
   const yearEnd = Temporal.PlainDate.from({ year: targetYear, month: 12, day: 31 })
   const todayDate = Temporal.Now.plainDateISO()
-  const endDate = Temporal.PlainDate.from({ year: targetYear, month: 12, day: 31 })
+  const endDate = targetYear === todayDate.year ? todayDate : Temporal.PlainDate.from({ year: targetYear, month: 12, day: 31 })
   const totalDays = endDate.since(yearStart).days + 1
   const contributions: { date: string; count: number; level: number }[] = []
   let totalCount = 0

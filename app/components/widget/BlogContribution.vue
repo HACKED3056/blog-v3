@@ -68,7 +68,7 @@ function tipText(cell: { date: string; count: number }) {
       <div class="year-nav">
         <button v-if="!isFirstYear" class="year-btn" @click="prevYear">◀</button>
         <span class="year-label">{{ currentYear }}</span>
-        <button class="year-btn" @click="nextYear">▶</button>
+        <button v-if="!isCurrentYear" class="year-btn" @click="nextYear">▶</button>
       </div>
 
       <div
