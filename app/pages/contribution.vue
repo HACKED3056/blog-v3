@@ -13,8 +13,40 @@ layoutStore.setAside([])
   <div class="contribution-page">
     <h1 class="page-title">笔记贡献</h1>
     <p class="page-desc">过去一年我的写作记录，每一格代表一篇笔记。</p>
+    <div class="start-date">
+      <div class="start-title">2026</div>
+      <div class="start-sub">启程 · 05.17</div>
+    </div>
     <WidgetBlogContribution class="large" />
     <WidgetBlogTimeline class="timeline-section" />
+n.start-date {
+  margin: 0.3em 0 0.8em;
+  text-align: center;
+}
+
+.start-title {
+  font-family: var(--font-stroke-free);
+  font-size: 5em;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  opacity: 0.5;
+  mask-image: linear-gradient(#FFF 50%, transparent);
+  color: transparent;
+  -webkit-text-stroke: 1px var(--c-text-3);
+  transition: color 0.25s ease;
+}
+
+.start-date:hover .start-title {
+  color: var(--c-text-3);
+}
+
+.start-sub {
+  margin-top: -0.5em;
+  font-size: 0.9em;
+  color: var(--c-text-2);
+  text-align: center;
+}
 
   </div>
 </template>
@@ -97,5 +129,34 @@ layoutStore.setAside([])
 
 .timeline-section {
   margin-top: 2.5rem;
+}
+
+.start-date {
+  margin: 0.3em 0 0.8em;
+  text-align: center;
+}
+
+.start-title {
+  font-family: var(--font-stroke-free);
+  font-size: 5em;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  opacity: 0.5;
+  mask-image: linear-gradient(#FFF 50%, transparent);
+  color: transparent;
+  -webkit-text-stroke: 1px var(--c-text-3);
+  transition: color 0.25s ease;
+}
+
+.start-date:hover .start-title {
+  color: var(--c-text-3);
+}
+
+.start-sub {
+  margin-top: -0.5em;
+  font-size: 0.9em;
+  color: var(--c-text-2);
+  text-align: center;
 }
 </style>
