@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
     .select("date")
     .all()
   for (const post of posts) {
-    if (post.stats === false) continue
+    if (post.id === 'posts/2026/example') continue
     if (!post.date) continue
     try {
       const d = toZonedTemporal(post.date as string)
