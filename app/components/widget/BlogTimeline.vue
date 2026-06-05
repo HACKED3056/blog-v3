@@ -250,3 +250,17 @@ function dateLabel(d: string) {
 
 .empty { opacity: 0.5; padding: 0.2em 0; }
 </style>
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .timeline { font-size: 0.8em; }
+
+  .card { width: 80% !important; }
+
+  .card.right { margin-left: 20% !important; }
+
+  .row { margin-bottom: 0.5em; }
+
+  .cover { width: 56px !important; height: 38px !important; }
+
+  .date-badge { font-size: 0.65em; }
+}
