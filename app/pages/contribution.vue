@@ -14,6 +14,8 @@ layoutStore.setAside([])
     <h1 class="page-title">笔记贡献</h1>
     <p class="page-desc">过去一年我的写作记录，每一格代表一篇笔记。</p>
     <WidgetBlogContribution class="large" />
+    <WidgetBlogTimeline class="timeline-section" />
+
   </div>
 </template>
 
@@ -89,5 +91,9 @@ layoutStore.setAside([])
 /* Add level-4 to legend */
 :deep(.legend .level-4) {
   display: inline-block;
+}
+
+.timeline-section {
+  margin-top: 2.5rem;
 }
 </style>
