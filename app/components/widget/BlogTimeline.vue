@@ -6,37 +6,48 @@ function dateLabel(d: string) {
   const p = d.split("-")
   return p[0] + "." + p[1] + "." + p[2]
 }
+
+function catColor(cat: string) {
+  const m: Record<string, string> = {
+    pwn: "#30a14e", "安全": "#40c463", "比赛": "#196127", "技术": "#9be9a8"
+  }
+  return m[cat] || "#ccc"
+}
 </script>
 
 <template>
   <BlogWidget card title="写作时间线">
     <div v-if="timeline && timeline.length" class="timeline">
-      <div v-for="(day, dayIdx) in timeline" :key="day.date" class="day-group">
+      <div v-for="(day, di) in timeline" :key="day.date">
         <div class="date-badge">{{ dateLabel(day.date) }}</div>
+        <div v-for="(entry, ei) in day.entries" :key="entry.path" class="row">
+          <!-- Left card -->
+          <UtilLink v-if="(di + ei) % 2 === 0" :to="entry.path" class="card left">
+            <NuxtImg v-if="entry.image" class="cover" :src="entry.image" loading="lazy" referrerpolicy="no-referrer" alt="" />
+            <div v-else class="cover fallback">📄</div>
+            <div class="info">
+              <div class="title">{{ entry.title }}</div>
+              <div v-if="entry.desc" class="desc">{{ entry.desc }}</div>
+              <div class="meta">
+                <span class="cat">{{ entry.category }}</span>
+                <span class="time">{{ entry.readingTime }}</span>
+              </div>
+            </div>
+          </UtilLink>
 
-        <div
-          v-for="(entry, entryIdx) in day.entries"
-          :key="entry.path"
-          class="timeline-entry"
-          :class="(dayIdx + entryIdx) % 2 === 0 ? 'left' : 'right'"
-        >
-          <div class="entry-dot" />
-          <UtilLink :to="entry.path" class="entry-card">
-            <NuxtImg
-              v-if="entry.image"
-              class="entry-cover"
-              :src="entry.image"
-              loading="lazy"
-              referrerpolicy="no-referrer"
-              alt=""
-            />
-            <div v-else class="entry-cover entry-cover-fallback">📄</div>
-            <div class="entry-info">
-              <div class="entry-title">{{ entry.title }}</div>
-              <div v-if="entry.desc" class="entry-desc">{{ entry.desc }}</div>
-              <div class="entry-meta">
-                <span class="entry-cat">{{ entry.category }}</span>
-                <span class="entry-time">{{ entry.readingTime }}</span>
+          <!-- Dot on the line -->
+          <div class="dot" :style="{ background: catColor(entry.category) }" />
+
+          <!-- Right card -->
+          <UtilLink v-if="(di + ei) % 2 !== 0" :to="entry.path" class="card right">
+            <NuxtImg v-if="entry.image" class="cover" :src="entry.image" loading="lazy" referrerpolicy="no-referrer" alt="" />
+            <div v-else class="cover fallback">📄</div>
+            <div class="info">
+              <div class="title">{{ entry.title }}</div>
+              <div v-if="entry.desc" class="desc">{{ entry.desc }}</div>
+              <div class="meta">
+                <span class="cat">{{ entry.category }}</span>
+                <span class="time">{{ entry.readingTime }}</span>
               </div>
             </div>
           </UtilLink>
@@ -58,21 +69,15 @@ function dateLabel(d: string) {
   content: "";
   position: absolute;
   left: 50%;
-  top: 0;
-  bottom: 0;
+  top: 0; bottom: 0;
   width: 2px;
   background: var(--c-border);
   transform: translateX(-50%);
 }
 
-.day-group {
-  position: relative;
-  margin-bottom: 0.8em;
-}
-
 .date-badge {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: fit-content;
   margin: 0 auto 0.5em;
   padding: 0.15em 0.8em;
@@ -81,49 +86,30 @@ function dateLabel(d: string) {
   font-size: 0.75em;
   font-weight: 600;
   border-radius: 999px;
-  white-space: nowrap;
-  letter-spacing: 0.02em;
 }
 
-.timeline-entry {
-  position: relative;
-  width: 46%;
+/* Each row = one entry + dot on the line */
+.row {
+  display: flex;
+  align-items: flex-start;
   margin-bottom: 0.35em;
+  position: relative;
 }
 
-.timeline-entry.left {
-  margin-left: 0;
-  margin-right: auto;
-  text-align: right;
-}
-
-.timeline-entry.right {
-  margin-left: auto;
-  margin-right: 0;
-  text-align: left;
-}
-
-.entry-dot {
+.dot {
   position: absolute;
-  top: 1em;
-  width: 11px; height: 11px;
+  left: 50%;
+  top: 0.7em;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
-  background: var(--c-contrib-3, #30a14e);
   border: 2px solid var(--c-bg);
   z-index: 2;
-}
-
-.timeline-entry.left .entry-dot {
-  right: -0.45em;
-  transform: translateX(50%);
-}
-
-.timeline-entry.right .entry-dot {
-  left: -0.45em;
   transform: translateX(-50%);
+  flex-shrink: 0;
 }
 
-.entry-card {
+.card {
   display: flex;
   gap: 0.4em;
   padding: 0.35em;
@@ -133,22 +119,39 @@ function dateLabel(d: string) {
   text-decoration: none;
   color: inherit;
   transition: background 0.12s, border-color 0.12s;
+  width: 46%;
 }
 
-.timeline-entry.left .entry-card {
-  flex-direction: row-reverse;
-}
-
-.entry-card:hover {
+.card:hover {
   background: var(--c-bg-secondary, rgba(127,127,127,0.1));
   border-color: var(--c-text-3);
 }
 
-.entry-cover {
-  width: 56px; height: 38px;
+.card.left {
+  margin-right: auto;
+  text-align: left;
+}
+
+.card.right {
+  margin-left: auto;
+  text-align: left;
+  flex-direction: row-reverse;
+}
+
+.card.right .info {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.cover {
+  width: 56px;
+  height: 38px;
   border-radius: 4px;
   object-fit: cover;
   flex-shrink: 0;
+}
+
+.fallback {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,7 +159,7 @@ function dateLabel(d: string) {
   font-size: 0.9em;
 }
 
-.entry-info {
+.info {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -164,11 +167,7 @@ function dateLabel(d: string) {
   gap: 0.05em;
 }
 
-.timeline-entry.left .entry-info {
-  align-items: flex-end;
-}
-
-.entry-title {
+.title {
   font-size: 0.85em;
   font-weight: 500;
   line-height: 1.3;
@@ -177,7 +176,7 @@ function dateLabel(d: string) {
   text-overflow: ellipsis;
 }
 
-.entry-desc {
+.desc {
   font-size: 0.72em;
   color: var(--c-text-secondary);
   line-height: 1.3;
@@ -187,18 +186,18 @@ function dateLabel(d: string) {
   overflow: hidden;
 }
 
-.entry-meta {
+.meta {
   display: flex;
   align-items: center;
   gap: 0.3em;
   margin-top: 0.05em;
 }
 
-.timeline-entry.left .entry-meta {
+.card.right .meta {
   justify-content: flex-end;
 }
 
-.entry-cat {
+.cat {
   font-size: 0.62em;
   color: var(--c-text-3);
   background: var(--c-bg-secondary, rgba(127,127,127,0.1));
@@ -206,13 +205,10 @@ function dateLabel(d: string) {
   border-radius: 3px;
 }
 
-.entry-time {
+.time {
   font-size: 0.62em;
   color: var(--c-text-3);
 }
 
-.empty {
-  opacity: 0.5;
-  padding: 0.2em 0;
-}
+.empty { opacity: 0.5; padding: 0.2em 0; }
 </style>
