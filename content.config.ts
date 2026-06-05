@@ -23,6 +23,7 @@ export interface ArticleSchema {
 	references?: { title?: string, link?: string }[]
 	/** TODO */
 	draft?: boolean
+	stats?: boolean
 	permalink?: string
 
 	readingTime?: ReadTimeResults
@@ -45,6 +46,7 @@ const articleSchema = z.object({
 		link: z.string().optional(),
 	})).optional(),
 	draft: z.boolean().default(false),
+	stats: z.boolean().default(true),
 	permalink: z.string().optional(),
 
 	readingTime: z.object({
