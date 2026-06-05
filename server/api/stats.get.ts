@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
 	const existedPath = new Map()
 
-	const posts = await queryCollection(event, 'content').all()
+	const posts = await queryCollection(event, 'content').where('stem', '<>', 'posts/2026/example').all()
 
 	const findOrCreateCategory = (
 		name: string,
@@ -34,8 +34,6 @@ export default defineEventHandler(async (event) => {
 	}
 
 	for (const post of posts) {
-  // 跳过纸鹿学姐的文章
-		if (post.title?.includes('纸鹿学姐')) continue
 		// 重复路径检测
 		if (existedPath.has(post.path))
 			console.warn('文章存在重复路径', post.path)
