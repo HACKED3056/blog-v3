@@ -77,7 +77,7 @@
       "18. 结构体的练习",
       "19.类和对象"
     ],
-    "charCount": 85378
+    "charCount": 85310
   },
   "posts/2026/一个适合初学计算机专业的小白教程": {
     "hash": "974244256e3feeceb176509af21799a01bfb0df5e7627831d7343c81a9610942",
@@ -202,7 +202,7 @@
     "charCount": 8992
   },
   "posts/2026/example": {
-    "hash": "7424957de6aa3dbe21efe1c58f333c1a0f59eb5839007008de4e3133e18398c7",
+    "hash": "adeb993408ad4d9dabf3bdbbcc12a86f957fc7346ed0e1693afaadb6177af717",
     "headings": [
       "在 Markdown 中使用组件",
       "通过 CSS 类名控制样式",
@@ -210,7 +210,7 @@
       "自定义组件",
       "组件使用方法"
     ],
-    "charCount": 22719
+    "charCount": 22725
   },
   "posts/2026/Pwn-ret2syscall": {
     "hash": "b5293f228b31c8b46632ca98b72ca72b31e65481c7863b455fc9f5e609996257",

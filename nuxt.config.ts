@@ -275,8 +275,10 @@ ${packageJson.homepage}
 							}
 						}
 
-						// always update timestamp when content changes
-						content.updated = `${dateStr} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
+						// update timestamp only for files already in cache
+						if (prev.hash) {
+							content.updated = `${dateStr} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
+						}
 					}
 				}
 				catch { /* skip on errors */ }
