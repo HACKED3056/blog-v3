@@ -21,6 +21,12 @@ const editLog: { path: string; date: string; newH2: number; charGrowth: number }
         "date": "2026-06-05",
         "newH2": 1,
         "charGrowth": 0
+    },
+    {
+        "path": "posts/2026/Pwn-ret2shellcode",
+        "date": "2026-06-05",
+        "newH2": 1,
+        "charGrowth": 0
     }
 ]
 // @edit-log-end
