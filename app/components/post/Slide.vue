@@ -190,8 +190,7 @@ useEventListener(carouselEl, 'wheel', (e) => {
 		opacity: 0;
 		inset: 0;
 		padding: 1em;
-		background: rgba(0,0,0,0.5);
-		backdrop-filter: blur(1em);
+		backdrop-filter: brightness(0.8) saturate(10) contrast(0.8) blur(2em);
 
 		> .title {
 			text-wrap: balance;
