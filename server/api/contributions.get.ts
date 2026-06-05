@@ -53,6 +53,7 @@ export default defineEventHandler(async (event) => {
   // Find the first date with contributions to trim empty months
   const sortedDates = [...dailyCount.entries()]
     .filter(([_, count]) => count > 0)
+    .filter(([date]) => date.startsWith(targetYear.toString()))
     .map(([date]) => Temporal.PlainDate.from(date))
     .sort(Temporal.PlainDate.compare)
   const firstActive = sortedDates.length > 0 ? sortedDates[0] : Temporal.PlainDate.from({ year: targetYear, month: 1, day: 1 })
