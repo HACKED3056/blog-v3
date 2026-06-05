@@ -50,7 +50,13 @@ export default defineEventHandler(async (event) => {
   }
   const query = getQuery(event)
   const targetYear = query.year ? Number(query.year) : Temporal.Now.plainDateISO().year
-  const yearStart = Temporal.PlainDate.from({ year: targetYear, month: 1, day: 1 })
+  // Find the first date with contributions to trim empty months
+  const sortedDates = [...dailyCount.entries()]
+    .filter(([_, count]) => count > 0)
+    .map(([date]) => Temporal.PlainDate.from(date))
+    .sort(Temporal.PlainDate.compare)
+  const firstActive = sortedDates.length > 0 ? sortedDates[0] : Temporal.PlainDate.from({ year: targetYear, month: 1, day: 1 })
+  const yearStart = Temporal.PlainDate.from({ year: firstActive.year, month: firstActive.month, day: firstActive.day })
   const yearEnd = Temporal.PlainDate.from({ year: targetYear, month: 12, day: 31 })
   const todayDate = Temporal.Now.plainDateISO()
   const endDate = targetYear === todayDate.year && Temporal.PlainDate.compare(todayDate, yearEnd) < 0 ? todayDate : yearEnd
