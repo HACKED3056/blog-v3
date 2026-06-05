@@ -42,6 +42,8 @@ layoutStore.setAside([])
   display: none;
 }
 
+:deep(.blog-widget) { background: none; border: none; }
+
 :deep(.widget-body.widget-card) {
   background: none;
   padding: 0;
