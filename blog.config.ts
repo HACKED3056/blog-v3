@@ -2,9 +2,9 @@ import type { FeedEntry } from "./app/types/feed"
 
 const basicConfig = {
 	title: "HACKED",
-	subtitle: "一个刚入门的pwner",
+	subtitle: "无论路途多么遥远，我们终将在旅途尽头再次相遇",
 	// 长 description 利好于 SEO
-	description: "一个刚入门的pwner",
+	description: "无论路途多么遥远，我们终将在旅途尽头再次相遇",
 	author: {
 		name: "HACKED",
 		avatar: "https://q1.qlogo.cn/g?b=qq&nk=3255154997&s=640",
