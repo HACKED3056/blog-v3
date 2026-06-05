@@ -42,6 +42,7 @@ export default defineEventHandler(async (event) => {
     .all()
   for (const post of posts) {
     if (!post.date) continue
+    if (post.draft) continue
     try {
       const d = toZonedTemporal(post.date as string)
       const key = d.year + "-" + String(d.month).padStart(2, "0") + "-" + String(d.day).padStart(2, "0")
