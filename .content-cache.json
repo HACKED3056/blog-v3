@@ -202,7 +202,7 @@
     "charCount": 8992
   },
   "posts/2026/example": {
-    "hash": "a03b9cc6bbe8ff7f024a328d26b567d464a4545f94e138aba58ab3cfc2db23ce",
+    "hash": "7424957de6aa3dbe21efe1c58f333c1a0f59eb5839007008de4e3133e18398c7",
     "headings": [
       "在 Markdown 中使用组件",
       "通过 CSS 类名控制样式",
@@ -210,7 +210,7 @@
       "自定义组件",
       "组件使用方法"
     ],
-    "charCount": 22690
+    "charCount": 22719
   },
   "posts/2026/Pwn-ret2syscall": {
     "hash": "b5293f228b31c8b46632ca98b72ca72b31e65481c7863b455fc9f5e609996257",
