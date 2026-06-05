@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
   }
   const posts = await queryCollection(event, "content")
     .where("stem", "LIKE", "posts/%")
-    .select("date")
+    .select("date", "stats")
     .all()
   for (const post of posts) {
     if (post.stats === false) continue
