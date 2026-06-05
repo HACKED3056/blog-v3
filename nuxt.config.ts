@@ -235,15 +235,15 @@ ${packageJson.homepage}
 					await writeFile(cachePath, JSON.stringify(cache, null, 2))
 
 					if (changed) {
+						const now = new Date()
+						const pad = (n: number) => String(n).padStart(2, '0')
+						const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+
 						const newH2 = Math.max(0, h2Count - prev.h2Count)
 						const charGrowth = Math.max(0, charCount - prev.charCount)
 						const hasGrowth = prev.hash && newH2 > 0
 
 						if (hasGrowth) {
-							const now = new Date()
-							const pad = (n: number) => String(n).padStart(2, '0')
-							const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
-
 							const logPath = resolve(process.cwd(), 'edit-log.json')
 							let log: { path: string; date: string; newH2: number; charGrowth: number }[] = []
 							try { log = JSON.parse(await readFile(logPath, 'utf-8')) }
@@ -252,7 +252,7 @@ ${packageJson.homepage}
 							log.push({ path: stem, date: dateStr, newH2, charGrowth })
 							await writeFile(logPath, JSON.stringify(log))
 
-							// 同步更新 API 文件内联数组
+							// sync API inline array
 							const apiPath = resolve(process.cwd(), 'server/api/contributions.get.ts')
 							let apiText = await readFile(apiPath, 'utf-8')
 							const startMark = '// @edit-log-start'
@@ -269,9 +269,10 @@ ${packageJson.homepage}
 								apiText = before + '\n' + jsonStr + '\n' + after
 								await writeFile(apiPath, apiText)
 							}
-
-							content.updated = `${dateStr} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
 						}
+
+						// always update timestamp when content changes
+						content.updated = `${dateStr} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
 					}
 				}
 				catch { /* skip on errors */ }
