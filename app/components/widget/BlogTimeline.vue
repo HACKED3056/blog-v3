@@ -158,7 +158,7 @@ function dateLabel(d: string) {
 }
 
 .entry-cover {
-  width: 68px; height: 44px;
+  width: 100px; height: 64px;
   border-radius: 4px;
   object-fit: cover;
   flex-shrink: 0;
