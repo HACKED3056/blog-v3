@@ -2,7 +2,7 @@
 title: Pwn-ret2libc
 description: pwn-第7部分知识ret2libc
 date: 2026-05-17 01:06:11
-updated: 2026-05-24 01:06:11
+updated: 2026-06-05 18:00:00
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260123142048_9f05b8ba428e596429adcd9d49e4c980626510519.jpg
 categories: [pwn, 安全]
 tags: [pwn]
