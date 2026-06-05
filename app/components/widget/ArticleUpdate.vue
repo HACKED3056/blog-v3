@@ -2,14 +2,14 @@
 const { data: articles } = await useAsyncData('widget:article-update', () =>
   queryCollection('content')
     .where('stem', 'LIKE', 'posts/%')
-    .select('title', 'updated', 'date', 'path')
+    .select('title', 'updated', 'date', 'path', 'stem')
     .order('updated', 'DESC')
     .order('date', 'DESC')
     .limit(8)
     .all()
 )
 
-const list = computed(() => articles.value?.map(a => ({
+const list = computed(() => articles.value?.filter(a => a.stem !== 'posts/2026/example')?.map(a => ({
   label: a.updated || a.date,
   value: a.title,
   href: a.path,
