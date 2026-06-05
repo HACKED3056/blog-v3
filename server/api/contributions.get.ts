@@ -4,13 +4,19 @@ import { toZonedTemporal } from "~~/shared/utils/time"
 const editLog: { path: string; date: string; newH2: number; charGrowth: number }[] =
 // @edit-log-start
 [
-    {
-        "path": "posts/2026/Pwn_ret2text",
-        "date": "2026-05-31",
-        "newH2": 2,
-        "charGrowth": 2303
-    }
-]
+	    {
+	        "path": "posts/2026/Pwn_ret2text",
+	        "date": "2026-05-31",
+	        "newH2": 2,
+	        "charGrowth": 2303
+	    },
+	    {
+	        "path": "posts/2026/御网杯2026",
+	        "date": "2026-06-05",
+	        "newH2": 3,
+	        "charGrowth": 5842
+	    }
+	]
 // @edit-log-end
 
 export default defineEventHandler(async (event) => {
