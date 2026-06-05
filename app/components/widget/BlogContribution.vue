@@ -71,6 +71,7 @@ function tipText(cell: { date: string; count: number }) {
         <button class="year-btn" :disabled="isCurrentYear" @click="nextYear">▶</button>
       </div>
 
+      <div class="graph-wrap">
       <div
         class="graph"
         :style="{
@@ -97,6 +98,7 @@ function tipText(cell: { date: string; count: number }) {
           :class="`level-${cell.level}`"
           :style="{ gridRow: ((i + startDay) % 7) + 2, gridColumn: Math.floor((i + startDay) / 7) + 2 }"
         />
+      </div>
       </div>
 
       <div class="legend">
@@ -223,5 +225,54 @@ function tipText(cell: { date: string; count: number }) {
 .empty {
   opacity: 0.5;
   padding: 0.2em 0;
+}
+
+/* Scrollable graph container */
+.graph-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.2em;
+}
+
+/* Mobile responsive: shrink cells on small screens */
+@media (max-width: 640px) {
+  .graph-wrap {
+    margin: 0 -1rem;
+    padding: 0 1rem;
+  }
+
+  .graph {
+    --cell-w: 11px !important;
+    --cell-h: 10px !important;
+    --col-label: 1.8em !important;
+    --row-label: 1em !important;
+    gap: 1.5px !important;
+  }
+
+  .days span {
+    font-size: 0.55em !important;
+    line-height: 10px !important;
+  }
+
+  .months span {
+    font-size: 0.55em !important;
+  }
+
+  .cell {
+    border-radius: 1.5px !important;
+  }
+
+  .legend .cell {
+    width: 10px !important;
+    height: 10px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .graph {
+    --cell-w: 9px !important;
+    --cell-h: 8px !important;
+    gap: 1px !important;
+  }
 }
 </style>
