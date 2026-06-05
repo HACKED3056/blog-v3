@@ -1,92 +1,250 @@
 {
-  "posts/2026/AI动画模型（用于进行编程语言的底层动画理解）": {
-    "hash": "0838c38168036944ca63616d40fa80be35589d1456eadd26426295e50aa8e0d1",
-    "h2Count": 2,
-    "charCount": 35086
-  },
-  "posts/2026/CTF常见的指令": {
-    "hash": "6fc8cae5cbb895f8938dfb6d51ce5cfc9b277c87621a095cb5d75ceeadf4c994",
-    "h2Count": 10,
-    "charCount": 18053
-  },
-  "posts/2026/ISCC 2026": {
-    "hash": "06db8f9a8d73fbafd2d92693dc428501a1aa40e94eb6b972a73f80e694b5ba16",
-    "h2Count": 4,
-    "charCount": 39808
-  },
-  "posts/2026/MISC-流量分析": {
-    "hash": "08402eb1b105c3fe4cafb010ae6f1b4c9920fadfe91d6102b850fbf127131ba2",
-    "h2Count": 28,
-    "charCount": 39179
-  },
-  "posts/2026/Pwn-Canary保护": {
-    "hash": "d5935c03ec4c0b1aabbd276f1cb6b17215d81b7ad126dce5ed0ba0b51bfc585e",
-    "h2Count": 2,
-    "charCount": 25086
-  },
-  "posts/2026/Pwn-PIE": {
-    "hash": "8138e7dc1ad395f11886bde7ce5060af79d2bea853f9a985b81ea49302a309c6",
-    "h2Count": 29,
-    "charCount": 8992
-  },
   "posts/2026/Pwn-ROP": {
     "hash": "5dd8fb84657af2db24628816cc5f79b062ef8a5b2e487a2090a03a9f9ace97fb",
-    "h2Count": 3,
+    "headings": [
+      "什么是ROP",
+      "[NISACTF 2022]ezstack",
+      "[WUSTCTF 2020]getshell2"
+    ],
     "charCount": 7808
-  },
-  "posts/2026/Pwn-ret2libc": {
-    "hash": "739de013983a1e82ebfbeda7c0f8dca84312b321c38ce9d7246124098b5a1207",
-    "h2Count": 4,
-    "charCount": 24957
-  },
-  "posts/2026/Pwn-ret2shellcode": {
-    "hash": "f89475fd15af60d01be2c41a4af1da9fc5ea2e9229c60f58824565ab5ce0b187",
-    "h2Count": 5,
-    "charCount": 7472
-  },
-  "posts/2026/Pwn-ret2syscall": {
-    "hash": "b5293f228b31c8b46632ca98b72ca72b31e65481c7863b455fc9f5e609996257",
-    "h2Count": 2,
-    "charCount": 8563
   },
   "posts/2026/Pwn_ret2text": {
     "hash": "bdd56745a6cd998c68d05b750f34c9052946b69029a3a7ef6ac5a7ed2ee3c28c",
-    "h2Count": 11,
+    "headings": [
+      "1.攻防pwn-P2",
+      "2.[SWPUCTF 2021 新生赛]gift_pwn",
+      "3.[SWPUCTF 2022 新生赛]Does your nc work？",
+      "4.[CISCN 2019华北]PWN1",
+      "5.[BJDCTF 2020]babystack",
+      "6.[BJDCTF 2020]babystack2.0",
+      "7.[watevrCTF 2019]Voting Machine 1",
+      "8.[Zero-G 2026] pwn1-Starport Ret2win",
+      "9.[御网杯2026] PWN1",
+      "10.[御网杯2026] PWN2"
+    ],
     "charCount": 22167
-  },
-  "posts/2026/Zero-G_2026": {
-    "hash": "44c995b01869288480edde31fec87f7815bfacfd1215212cf5f83bdcd3294900",
-    "h2Count": 2,
-    "charCount": 10955
-  },
-  "posts/2026/example": {
-    "hash": "a03b9cc6bbe8ff7f024a328d26b567d464a4545f94e138aba58ab3cfc2db23ce",
-    "h2Count": 5,
-    "charCount": 22690
-  },
-  "posts/2026/unictf_2026": {
-    "hash": "60182ac9ba15d9b22ae47a51a8e663c3e2bb5f958ce93cb72228bdef76d56979",
-    "h2Count": 5,
-    "charCount": 27642
-  },
-  "posts/2026/一个适合初学计算机专业的小白教程": {
-    "hash": "974244256e3feeceb176509af21799a01bfb0df5e7627831d7343c81a9610942",
-    "h2Count": 1,
-    "charCount": 5899
-  },
-  "posts/2026/从c到c++的过渡": {
-    "hash": "3822492d0a6f952b48d05ead1fbc3b04376374dffa8c4f2cea28568edafe7481",
-    "h2Count": 22,
-    "charCount": 85310
   },
   "posts/2026/信息收集": {
     "hash": "0461b4530a6adf3ed016959079d72c3e3e73395b257a852e8b3b4ecfe940ccf0",
-    "h2Count": 3,
+    "headings": [
+      "网络资产收集",
+      "Web 信息收集",
+      "python .\\py5.py  127.0.0.1 1000"
+    ],
     "charCount": 12198
+  },
+  "posts/2026/Pwn-ret2shellcode": {
+    "hash": "596a035e2c26ba6e54b2aa9f37a615d891d130922f72a1787e0df806407b2426",
+    "headings": [
+      "ret2shellcode 基础概念",
+      "[HNCTF 2022 Week1] ret2shellcode",
+      "[GDOUCTF 2023] ezshellcode",
+      "[御网杯2026]PWN3"
+    ],
+    "charCount": 7472
+  },
+  "posts/2026/Pwn-Canary保护": {
+    "hash": "ac35ae24ebce478dac99f4888b8d43a6fdbfd74fb99b0fa90aa64b5754079e6e",
+    "headings": [
+      "canary知识点介绍",
+      "[Zero-G 2026] Format Station"
+    ],
+    "charCount": 25086
+  },
+  "posts/2026/从c到c++的过渡": {
+    "hash": "3822492d0a6f952b48d05ead1fbc3b04376374dffa8c4f2cea28568edafe7481",
+    "headings": [
+      "从c到c++的过渡",
+      "特别鸣谢",
+      "更新日志",
+      "1.快速了解c和c++的不同",
+      "2.指针（c语言内容）",
+      "3.指针和数组",
+      "4.指针数组和数组指针",
+      "5.指针和二维数组",
+      "6.指向指针的指针",
+      "7.指针和常量",
+      "8.参数和指针",
+      "9.函数",
+      "10.函数指针和指针函数",
+      "11.指针和引用",
+      "12.结构体",
+      "13.结构体数组",
+      "14.结构体指针",
+      "15.结构体嵌套结构体",
+      "16. 结构体做函数参数",
+      "17.结构体中的const使用",
+      "18. 结构体的练习",
+      "19.类和对象"
+    ],
+    "charCount": 85310
+  },
+  "posts/2026/一个适合初学计算机专业的小白教程": {
+    "hash": "974244256e3feeceb176509af21799a01bfb0df5e7627831d7343c81a9610942",
+    "headings": [
+      "一个适合初学计算机专业的小白教程"
+    ],
+    "charCount": 5899
   },
   "posts/2026/御网杯2026": {
     "hash": "e3467b935fe37c4bab7e858de6bc9262bb187e66a5472c4299f443f9ec8457d0",
-    "h2Count": 4,
+    "headings": [
+      "[御网杯2026] PWN1",
+      "[御网杯2026] PWN2",
+      "[御网杯2026]PWN3",
+      "[御网杯2026]PWN3_Pro"
+    ],
     "charCount": 6194
+  },
+  "posts/2026/ISCC 2026": {
+    "hash": "06db8f9a8d73fbafd2d92693dc428501a1aa40e94eb6b972a73f80e694b5ba16",
+    "headings": [
+      "ISCC校赛练武pwn1",
+      "ISCC 校赛练武pwn2",
+      "ISCC 2026 校赛PWN3 — 自动售货机",
+      "ISCC 2026 校赛pwn4 题解"
+    ],
+    "charCount": 39808
+  },
+  "posts/2026/Pwn-ret2libc": {
+    "hash": "739de013983a1e82ebfbeda7c0f8dca84312b321c38ce9d7246124098b5a1207",
+    "headings": [
+      "PWN-Ret2libc",
+      "[2021 鹤城杯]babyof",
+      "[Zero-G 2026] Format Station",
+      "[御网杯2026]PWN3_Pro"
+    ],
+    "charCount": 24957
+  },
+  "posts/2026/AI动画模型（用于进行编程语言的底层动画理解）": {
+    "hash": "0838c38168036944ca63616d40fa80be35589d1456eadd26426295e50aa8e0d1",
+    "headings": [
+      "AI 模型",
+      "动画代码"
+    ],
+    "charCount": 35086
+  },
+  "posts/2026/MISC-流量分析": {
+    "hash": "08402eb1b105c3fe4cafb010ae6f1b4c9920fadfe91d6102b850fbf127131ba2",
+    "headings": [
+      "NSSCTF-MISC",
+      "-*- coding: utf-8 -*-",
+      "-*- coding: utf-8 -*-",
+      "==============================================================================",
+      "CTF Universal USB Keyboard Traffic Decoder",
+      "==============================================================================",
+      "[1. DICTIONARIES] ",
+      "Normal keys (No Shift)",
+      "Shifted keys (When Shift is pressed)",
+      "[2. CORE DECODER FUNCTION]",
+      "filter_control: Set to True to extract pure hex (ignores TAB, F1, etc.)",
+      "filter_control: Set to False to see EVERYTHING the hacker typed",
+      "[3. HOW TO USE / EXECUTION]",
+      "将2.8.1解密出来的那一大串十六进制直接贴在这里，末尾补一个0以防丢位",
+      "写入为rar压缩文件",
+      "-*- coding: utf-8 -*-",
+      "Universal HID Mapping",
+      "-*- coding: utf-8 -*-",
+      "1. Define the exact mapping based on the keyboard shape",
+      "This bypasses the mathematical errors and maps the \"circle\" directly to the \"center\"",
+      "The raw ciphertext from your traffic capture",
+      "-*- coding: utf-8 -*-",
+      "Universal HID Mapping",
+      "-*- coding: utf-8 -*-",
+      "Universal HID Mapping",
+      "格式：outguess -k '密码' -r 要破解的图片 输出的文件名",
+      "-*- coding: gbk -*-",
+      "蓝桥杯模拟-春秋GAME"
+    ],
+    "charCount": 39179
+  },
+  "posts/2026/Zero-G_2026": {
+    "hash": "44c995b01869288480edde31fec87f7815bfacfd1215212cf5f83bdcd3294900",
+    "headings": [
+      "[Zero-G 2026] pwn1-Starport Ret2win",
+      "[Zero-G 2026]pwn2-Format Station"
+    ],
+    "charCount": 10955
+  },
+  "posts/2026/Pwn-PIE": {
+    "hash": "8138e7dc1ad395f11886bde7ce5060af79d2bea853f9a985b81ea49302a309c6",
+    "headings": [
+      "Pwn-PIE",
+      "设置目标架构为 amd64（64位）",
+      "日志级别设为 info（显示成功/错误信息，少一些干扰）",
+      "加载 ELF 文件，获取符号信息",
+      "连接程序（本地测试用 process，打远程用 remote）",
+      "p = remote('node5.anna.nssctf.cn', 28586)  # 远程靶机",
+      "等待程序输出 \"Hi! What's your name? \"，然后发送 payload",
+      "%17$p 读第 17 个参数 → Canary",
+      "%19$p 读第 19 个参数 → 返回地址",
+      "程序会打印: \"Nice to meet you, 0xCANARY.0xRETADDR!\\n\"",
+      "我们收 \"Nice to meet you, \" 之后的内容",
+      "data 的内容类似: b\"0xabcd1234.0x5678ef00\"",
+      "用 . 分割成两部分",
+      "把十六进制字符串转成整数",
+      "返回地址 = main+0x146f，所以 PIE 基址 = 返回地址 - 0x146f",
+      "有了基址就能算出 win 函数的真实地址",
+      "用于栈对齐的 ret gadget",
+      "打印出来看看",
+      "等待第二个提示",
+      "构造 payload：",
+      "- 0x38 字节填充（从 buffer2 到 canary）",
+      "- Canary（原样写回，绕过检查）",
+      "- 8 字节假 RBP（任意值）",
+      "- ret gadget（修复栈对齐）",
+      "- win 函数地址",
+      "进入交互模式，拿到 flag",
+      "p = remote('node5.anna.nssctf.cn', 28586)",
+      "======== Step 1: Leak ========",
+      "======== Step 2: Overflow ========"
+    ],
+    "charCount": 8992
+  },
+  "posts/2026/example": {
+    "hash": "a03b9cc6bbe8ff7f024a328d26b567d464a4545f94e138aba58ab3cfc2db23ce",
+    "headings": [
+      "在 Markdown 中使用组件",
+      "通过 CSS 类名控制样式",
+      "Markdown 语法组件",
+      "自定义组件",
+      "组件使用方法"
+    ],
+    "charCount": 22690
+  },
+  "posts/2026/Pwn-ret2syscall": {
+    "hash": "b5293f228b31c8b46632ca98b72ca72b31e65481c7863b455fc9f5e609996257",
+    "headings": [
+      "原理",
+      "[CISCN 2023 初赛]烧烤摊儿"
+    ],
+    "charCount": 8563
+  },
+  "posts/2026/unictf_2026": {
+    "hash": "60182ac9ba15d9b22ae47a51a8e663c3e2bb5f958ce93cb72228bdef76d56979",
+    "headings": [
+      "1.Silent Resolver",
+      "Silent Resolver续解",
+      "2.工厂应急流量分析",
+      "1.NTRU",
+      "2.Subgroup-Weaver"
+    ],
+    "charCount": 27642
+  },
+  "posts/2026/CTF常见的指令": {
+    "hash": "6fc8cae5cbb895f8938dfb6d51ce5cfc9b277c87621a095cb5d75ceeadf4c994",
+    "headings": [
+      "将提取出的数据重定向到本地文件",
+      "有密码的情况",
+      "没密码的情况（纯盲猜）",
+      "-*- coding: utf-8 -*-",
+      "Universal HID Mapping",
+      "-*- coding: gbk -*-",
+      "测试用例",
+      "测试用例",
+      "测试用例",
+      "测试用例"
+    ],
+    "charCount": 18053
   }
 }

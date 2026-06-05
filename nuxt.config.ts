@@ -217,21 +217,21 @@ ${packageJson.homepage}
 					const raw = await readFile(ctx.file.path)
 					const text = raw.toString()
 					const hash = createHash('sha256').update(raw).digest('hex')
-					const h2Count = (text.match(/^## /gm) || []).length
+					const headings: string[] = [...text.matchAll(/^## (.+)$/gm)].map(m => m[1])
 					const charCount = text.length
 					const stem = content.stem
 
 					const cachePath = resolve(process.cwd(), '.content-cache.json')
-					let cache: Record<string, { hash: string; h2Count: number; charCount: number }> = {}
+					let cache: Record<string, { hash: string; headings: string[]; charCount: number }> = {}
 					try { cache = JSON.parse(await readFile(cachePath, 'utf-8')) }
 					catch { /* 首次运行 */ }
 
 					const prevRaw = cache[stem]
-					const prev = typeof prevRaw === 'object' && prevRaw !== null ? prevRaw : { hash: typeof prevRaw === 'string' ? prevRaw : '', h2Count: 0, charCount: 0 }
+					const prev = typeof prevRaw === "object" && prevRaw !== null && Array.isArray(prevRaw.headings) ? prevRaw : { hash: typeof prevRaw === "string" ? prevRaw : "", headings: [] as string[], charCount: 0 }
 
 					const changed = prev.hash !== hash
 
-					cache[stem] = { hash, h2Count, charCount }
+					cache[stem] = { hash, headings, charCount }
 					await writeFile(cachePath, JSON.stringify(cache, null, 2))
 
 					if (changed) {
@@ -239,9 +239,9 @@ ${packageJson.homepage}
 						const pad = (n: number) => String(n).padStart(2, '0')
 						const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
 
-						const newH2 = Math.max(0, h2Count - prev.h2Count)
+						const newHeadings = headings.filter(h => !prev.headings.includes(h)); const newH2 = newHeadings.length
 						const charGrowth = Math.max(0, charCount - prev.charCount)
-						const hasGrowth = prev.hash && newH2 > 0
+						const hasGrowth = !!(prev.hash) && newH2 > 0
 
 						if (hasGrowth) {
 							const logPath = resolve(process.cwd(), 'edit-log.json')
