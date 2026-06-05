@@ -72,10 +72,10 @@ function tipText(cell: { date: string; count: number }) {
       </div>
 
       <div class="start-date">
-        <div class="start-year">2026</div>
-        <div class="start-sub">
+        <div class="start-icon">📅</div>
+        <div class="start-text">
           <span class="start-label">启程</span>
-          <span class="start-value">05.17</span>
+          <span class="start-value blur-hover">2026.05.17</span>
         </div>
       </div>
 
@@ -228,36 +228,46 @@ function tipText(cell: { date: string; count: number }) {
 }
 
 .start-date {
-  margin: 0.5em 0 0.2em;
-  line-height: 1;
-}
-
-.start-year {
-  font-family: var(--font-stroke-free);
-  font-size: 3em;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  mask-image: linear-gradient(#FFF 50%, transparent);
-  color: var(--c-text);
-}
-
-.start-sub {
   display: flex;
-  align-items: baseline;
-  gap: 0.4em;
-  margin-top: -0.2em;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0.8em 0 0.3em;
+  padding: 0.3em 0.6em;
+  border-radius: 8px;
+  background: var(--c-bg-secondary, rgba(127,127,127,0.04));
+  border: 1px solid var(--c-border);
+}
+
+.start-icon {
+  font-size: 1.5em;
+  line-height: 1;
+}
+
+.start-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05em;
 }
 
 .start-label {
-  font-size: 0.75em;
+  font-size: 0.65em;
   color: var(--c-text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .start-value {
   font-size: 1em;
-  font-weight: 600;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   color: var(--c-text-2);
+  transition: filter 0.25s ease;
+  filter: blur(3px);
+  cursor: default;
+}
+
+.start-value:hover {
+  filter: blur(0);
 }
 
 .empty {
