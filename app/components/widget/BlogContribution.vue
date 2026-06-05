@@ -165,7 +165,8 @@ function tipText(cell: { date: string; count: number }) {
   transform: scale(1.35);
 }
 
-.cell.level-0 { background: transparent; }
+.graph .cell.level-0 { background: transparent; }
+.legend .cell.level-0 { background: var(--c-border); }
 .cell.level-1 { background: var(--c-contrib-1, #9be9a8); }
 .cell.level-2 { background: var(--c-contrib-2, #40c463); }
 .cell.level-3 { background: var(--c-contrib-3, #30a14e); }
