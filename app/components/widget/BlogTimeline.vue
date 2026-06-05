@@ -8,7 +8,6 @@ function toggleDay(date: string) {
     expanded.value.delete(date)
   } else {
     expanded.value.add(date)
-    // Force reactivity by creating new Set
     expanded.value = new Set(expanded.value)
   }
 }
@@ -24,42 +23,62 @@ function dateLabel(d: string) {
   <BlogWidget card title="写作时间线">
     <div v-if="timeline && timeline.length" class="timeline">
       <div v-for="day in timeline" :key="day.date" class="day-group">
-        <button class="day-header" @click="toggleDay(day.date)">
+        <div class="day-header">
           <div class="day-dot" />
           <span class="day-label">{{ dateLabel(day.date) }}</span>
           <span class="day-count">{{ day.entries.length }} 篇</span>
-          <span class="expand-icon">{{ expanded.has(day.date) ? "−" : "+" }}</span>
-        </button>
-        <Transition name="fade">
-          <div v-if="expanded.has(day.date)" class="day-entries">
-            <UtilLink
-              v-for="entry in day.entries"
-              :key="entry.path"
-              class="entry-card"
-              :to="entry.path"
-            >
-              <NuxtImg
-                v-if="entry.image"
-                class="entry-cover"
-                :src="entry.image"
-                loading="lazy"
-                referrerpolicy="no-referrer"
-                alt=""
-              />
-              <div v-else class="entry-cover entry-cover-fallback">
-                <span class="cover-icon">📄</span>
+        </div>
+        <div class="day-entries">
+          <!-- Show first 2 articles always -->
+          <UtilLink
+            v-for="entry in day.entries.slice(0, 2)"
+            :key="entry.path"
+            class="entry-card"
+            :to="entry.path"
+          >
+            <NuxtImg v-if="entry.image" class="entry-cover" :src="entry.image" loading="lazy" referrerpolicy="no-referrer" alt="" />
+            <div v-else class="entry-cover entry-cover-fallback"><span class="cover-icon">📄</span></div>
+            <div class="entry-info">
+              <div class="entry-title">{{ entry.title }}</div>
+              <div v-if="entry.desc" class="entry-desc">{{ entry.desc }}</div>
+              <div class="entry-meta">
+                <span class="entry-cat">{{ entry.category }}</span>
+                <span class="entry-time">{{ entry.readingTime }}</span>
               </div>
-              <div class="entry-info">
-                <div class="entry-title">{{ entry.title }}</div>
-                <div v-if="entry.desc" class="entry-desc">{{ entry.desc }}</div>
-                <div class="entry-meta">
-                  <span class="entry-cat">{{ entry.category }}</span>
-                  <span class="entry-time">{{ entry.readingTime }}</span>
+            </div>
+          </UtilLink>
+
+          <!-- Expandable: remaining articles -->
+          <Transition name="fade">
+            <div v-if="expanded.has(day.date)" class="extra-entries">
+              <UtilLink
+                v-for="entry in day.entries.slice(2)"
+                :key="entry.path"
+                class="entry-card"
+                :to="entry.path"
+              >
+                <NuxtImg v-if="entry.image" class="entry-cover" :src="entry.image" loading="lazy" referrerpolicy="no-referrer" alt="" />
+                <div v-else class="entry-cover entry-cover-fallback"><span class="cover-icon">📄</span></div>
+                <div class="entry-info">
+                  <div class="entry-title">{{ entry.title }}</div>
+                  <div v-if="entry.desc" class="entry-desc">{{ entry.desc }}</div>
+                  <div class="entry-meta">
+                    <span class="entry-cat">{{ entry.category }}</span>
+                    <span class="entry-time">{{ entry.readingTime }}</span>
+                  </div>
                 </div>
-              </div>
-            </UtilLink>
-          </div>
-        </Transition>
+              </UtilLink>
+            </div>
+          </Transition>
+
+          <button
+            v-if="day.entries.length > 2"
+            class="show-more"
+            @click="toggleDay(day.date)"
+          >
+            {{ expanded.has(day.date) ? "收起" : `展开其余 ${day.entries.length - 2} 篇` }}
+          </button>
+        </div>
       </div>
     </div>
     <p v-else class="empty">加载中...</p>
@@ -67,16 +86,14 @@ function dateLabel(d: string) {
 </template>
 
 <style scoped>
-.timeline {
-  font-size: 0.85em;
-}
+.timeline { font-size: 0.85em; }
 
 .day-group {
   position: relative;
   padding-left: 1.5em;
+  margin-bottom: 0.5em;
 }
 
-/* Vertical line */
 .day-group::before {
   content: "";
   position: absolute;
@@ -88,28 +105,15 @@ function dateLabel(d: string) {
   border-radius: 1px;
 }
 
-.day-group:last-child::before {
-  display: none;
-}
+.day-group:last-child::before { display: none; }
 
 .day-header {
   display: flex;
   align-items: center;
   gap: 0.5em;
-  margin-bottom: 0.3em;
+  margin-bottom: 0.4em;
   position: relative;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.3em 0;
-  width: 100%;
-  text-align: left;
-  color: inherit;
-  border-radius: 4px;
-}
-
-.day-header:hover {
-  background: var(--c-bg-secondary, rgba(127,127,127,0.06));
+  padding: 0.2em 0;
 }
 
 .day-dot {
@@ -117,54 +121,22 @@ function dateLabel(d: string) {
   left: -1.25em;
   top: 50%;
   transform: translateY(-50%);
-  width: 14px;
-  height: 14px;
+  width: 14px; height: 14px;
   border-radius: 50%;
   background: var(--c-contrib-3, #30a14e);
   border: 3px solid var(--c-bg);
   z-index: 1;
   flex-shrink: 0;
-  transition: transform 0.2s;
 }
 
-.day-header:hover .day-dot {
-  transform: translateY(-50%) scale(1.25);
-}
-
-.day-label {
-  font-weight: 600;
-  font-size: 1em;
-  color: var(--c-text);
-}
-
-.day-count {
-  font-size: 0.78em;
-  color: var(--c-text-secondary);
-  flex: 1;
-}
-
-.expand-icon {
-  font-size: 1.1em;
-  font-weight: 700;
-  color: var(--c-text-3);
-  width: 1.2em;
-  height: 1.2em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 3px;
-  transition: background 0.15s;
-}
-
-.day-header:hover .expand-icon {
-  background: var(--c-bg-secondary, rgba(127,127,127,0.1));
-}
+.day-label { font-weight: 600; font-size: 1em; color: var(--c-text); }
+.day-count { font-size: 0.78em; color: var(--c-text-secondary); }
 
 .day-entries {
   display: flex;
   flex-direction: column;
   gap: 0.4em;
-  margin-bottom: 0.8em;
+  margin-bottom: 0.6em;
   padding-left: 0.2em;
 }
 
@@ -186,8 +158,7 @@ function dateLabel(d: string) {
 }
 
 .entry-cover {
-  width: 68px;
-  height: 44px;
+  width: 68px; height: 44px;
   border-radius: 4px;
   object-fit: cover;
   flex-shrink: 0;
@@ -200,9 +171,7 @@ function dateLabel(d: string) {
   background: var(--c-border);
 }
 
-.cover-icon {
-  font-size: 1.1em;
-}
+.cover-icon { font-size: 1.1em; }
 
 .entry-info {
   flex: 1;
@@ -246,21 +215,38 @@ function dateLabel(d: string) {
   border-radius: 3px;
 }
 
-.entry-time {
-  font-size: 0.68em;
-  color: var(--c-text-3);
+.entry-time { font-size: 0.68em; color: var(--c-text-3); }
+
+.show-more {
+  display: block;
+  width: 100%;
+  padding: 0.35em 0.6em;
+  font-size: 0.78em;
+  color: var(--c-text-secondary);
+  background: var(--c-bg-secondary, rgba(127,127,127,0.03));
+  border: 1px dashed var(--c-border);
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
 }
 
-/* Transition */
+.show-more:hover {
+  background: var(--c-bg-secondary, rgba(127,127,127,0.1));
+  color: var(--c-text);
+  border-style: solid;
+}
+
+.extra-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.15s ease;
 }
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 
-.empty {
-  opacity: 0.5;
-  padding: 0.2em 0;
-}
+.empty { opacity: 0.5; padding: 0.2em 0; }
 </style>
