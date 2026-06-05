@@ -19,35 +19,6 @@ layoutStore.setAside([])
     </div>
     <WidgetBlogContribution class="large" />
     <WidgetBlogTimeline class="timeline-section" />
-n.start-date {
-  margin: 0.3em 0 0.8em;
-  text-align: center;
-}
-
-.start-title {
-  font-family: var(--font-stroke-free);
-  font-size: 5em;
-  font-weight: 800;
-  line-height: 1;
-  text-align: center;
-  opacity: 0.5;
-  mask-image: linear-gradient(#FFF 50%, transparent);
-  color: transparent;
-  -webkit-text-stroke: 1px var(--c-text-3);
-  transition: color 0.25s ease;
-}
-
-.start-date:hover .start-title {
-  color: var(--c-text-3);
-}
-
-.start-sub {
-  margin-top: -0.5em;
-  font-size: 0.9em;
-  color: var(--c-text-2);
-  text-align: center;
-}
-
   </div>
 </template>
 
@@ -133,7 +104,6 @@ n.start-date {
 
 .start-date {
   margin: 0.3em 0 0.8em;
-  text-align: center;
 }
 
 .start-title {
@@ -141,7 +111,6 @@ n.start-date {
   font-size: 5em;
   font-weight: 800;
   line-height: 1;
-  text-align: center;
   opacity: 0.5;
   mask-image: linear-gradient(#FFF 50%, transparent);
   color: transparent;
@@ -157,6 +126,5 @@ n.start-date {
   margin-top: -0.5em;
   font-size: 0.9em;
   color: var(--c-text-2);
-  text-align: center;
 }
 </style>
