@@ -180,7 +180,6 @@ function tipText(cell: { date: string; count: number }) {
 }
 
 .legend .cell {
-  background: transparent;
   width: 12px;
   height: 12px;
 }
