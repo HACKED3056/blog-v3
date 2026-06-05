@@ -32,7 +32,7 @@ defineExpose({ body })
 		class="widget-body"
 		:class="{ 'widget-card': card, 'with-bg': bgImg, 'scrollcheck-y scrollbar-hidden': shrink }"
 	>
-		<NuxtImg v-if="bgImg" class="bg-img" :class="{ 'bg-right': bgRight }" :src="bgImg" alt="" />
+		<NuxtImg v-if="bgImg" class="bg-img" loading="lazy" :class="{ 'bg-right': bgRight }" :src="bgImg" alt="" />
 		<slot />
 	</div>
 </section>

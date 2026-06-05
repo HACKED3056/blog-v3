@@ -19,7 +19,7 @@ const appConfig = useAppConfig()
 		/>
 	</div>
 
-	<NuxtImg
+	<NuxtImg loading="lazy"
 		:src="appConfig.header.logo"
 		class="blog-logo round-cobblestone"
 		:class="{ circle: appConfig.header.showTitle }"
