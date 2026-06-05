@@ -1,7 +1,7 @@
 import type { FeedEntry } from "./app/types/feed"
 
 const basicConfig = {
-	title: "HACKED",
+	title: "HACKED的小破站",
 	subtitle: "无论路途多么遥远，我们终将在旅途尽头再次相遇",
 	// 长 description 利好于 SEO
 	description: "无论路途多么遥远，我们终将在旅途尽头再次相遇",
