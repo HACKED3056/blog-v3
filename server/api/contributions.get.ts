@@ -4,31 +4,43 @@ import { toZonedTemporal } from "~~/shared/utils/time"
 const editLog: { path: string; date: string; newH2: number; charGrowth: number }[] =
 // @edit-log-start
 [
-    {
-        "path": "posts/2026/Pwn_ret2text",
-        "date": "2026-05-31",
-        "newH2": 2,
-        "charGrowth": 2303
-    },
-    {
-        "path": "posts/2026/Pwn-Canary保护",
-        "date": "2026-06-05",
-        "newH2": 1,
-        "charGrowth": 0
-    },
-    {
-        "path": "posts/2026/Pwn-ret2libc",
-        "date": "2026-06-05",
-        "newH2": 1,
-        "charGrowth": 0
-    },
-    {
-        "path": "posts/2026/Pwn-ret2shellcode",
-        "date": "2026-06-05",
-        "newH2": 1,
-        "charGrowth": 0
-    }
-]
+	    {
+	        "path": "posts/2026/Pwn_ret2text",
+	        "date": "2026-05-31",
+	        "newH2": 2,
+	        "charGrowth": 2303
+	    },
+	    {
+	        "path": "posts/2026/Pwn-Canary保护",
+	        "date": "2026-06-05",
+	        "newH2": 1,
+	        "charGrowth": 0
+	    },
+	    {
+	        "path": "posts/2026/Pwn-ret2libc",
+	        "date": "2026-06-05",
+	        "newH2": 1,
+	        "charGrowth": 0
+	    },
+	    {
+	        "path": "posts/2026/Pwn-ret2shellcode",
+	        "date": "2026-06-05",
+	        "newH2": 1,
+	        "charGrowth": 0
+	    },
+	    {
+	        "path": "posts/2026/一个适合初学计算机专业的小白教程",
+	        "date": "2026-06-11",
+	        "newH2": 1,
+	        "charGrowth": 1648
+	    },
+	    {
+	        "path": "posts/2026/一个适合初学计算机专业的小白教程",
+	        "date": "2026-06-11",
+	        "newH2": 1,
+	        "charGrowth": 0
+	    }
+	]
 // @edit-log-end
 
 export default defineEventHandler(async (event) => {
