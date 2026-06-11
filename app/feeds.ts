@@ -7,6 +7,15 @@ export default [
 		desc: "特别鸣谢",
 		entries: [
 			{
+				author: "丁当猫的学习笔记",
+				title: "丁当猫的学习笔记",
+				desc: "",
+				link: "https://www.yuque.com/dingdangmao-qcyws/wletnw",
+				icon: "",
+				avatar: "",
+				date: "2026-06-11",
+			},
+			{
 				author: "纸鹿摸鱼处",
 				title: "纸鹿摸鱼处",
 				desc: "感谢前端大手子开源博客系统，快去围观前端大手子！",
@@ -22,6 +31,15 @@ export default [
 		desc: "我的个人博客",
 		entries: [myFeed,
 			{
+				author: "丁当猫的学习笔记",
+				title: "丁当猫的学习笔记",
+				desc: "",
+				link: "https://www.yuque.com/dingdangmao-qcyws/wletnw",
+				icon: "",
+				avatar: "",
+				date: "2026-06-11",
+			},
+			{
 				author: "HACKED的仓库",
 				title: "HACKED的仓库",
 				desc: "我的Gitee仓库",
@@ -36,6 +54,15 @@ export default [
 		name: "CTF-Weber",
 		desc: "CTF-Weber",
 		entries: [
+			{
+				author: "丁当猫的学习笔记",
+				title: "丁当猫的学习笔记",
+				desc: "",
+				link: "https://www.yuque.com/dingdangmao-qcyws/wletnw",
+				icon: "",
+				avatar: "",
+				date: "2026-06-11",
+			},
 			{
 				author: "康可ing",
 				title: "康可ing",
@@ -70,6 +97,15 @@ export default [
 		desc: "CTF-Pwner",
 		entries: [
 			{
+				author: "丁当猫的学习笔记",
+				title: "丁当猫的学习笔记",
+				desc: "",
+				link: "https://www.yuque.com/dingdangmao-qcyws/wletnw",
+				icon: "",
+				avatar: "",
+				date: "2026-06-11",
+			},
+			{
 				author: "HFTTC",
 				title: "HFTTC",
 				desc: "偶遇100篇pwn笔记大手子",
@@ -84,6 +120,15 @@ export default [
 		name: "漫游",
 		desc: "网上冲浪看到的一些好的学习文章",
 		entries: [
+			{
+				author: "丁当猫的学习笔记",
+				title: "丁当猫的学习笔记",
+				desc: "",
+				link: "https://www.yuque.com/dingdangmao-qcyws/wletnw",
+				icon: "",
+				avatar: "",
+				date: "2026-06-11",
+			},
 		],
 	},
 ] satisfies FeedGroup[]
