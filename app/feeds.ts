@@ -80,4 +80,10 @@ export default [
 			},
 		],
 	},
+	{
+		name: "漫游",
+		desc: "网上冲浪看到的一些好的学习文章",
+		entries: [
+		],
+	},
 ] satisfies FeedGroup[]
