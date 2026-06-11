@@ -75,15 +75,14 @@ const appConfig = useAppConfig()
 .header-title {
 	font-family: AlimamaFangYuanTi, "Noto Sans SC", sans-serif;
 	font-size: 1.5em;
-	font-synthesis: none;
+	font-synthesis: style weight;
 	font-variation-settings: "wght" 600, "BEVL" 100;
 
 	> .split-char {
-  font-weight: 700;
-  font-style: italic;
 		animation: 3.14s infinite alternate vf-weight, 2.72s infinite alternate vf-bevel;
 		animation-delay: var(--delay);
 		animation-play-state: paused;
+		font-style: italic;
 	}
 }
 
@@ -118,11 +117,10 @@ const appConfig = useAppConfig()
 	z-index: -2;
 
 	> .split-char {
-  font-weight: 700;
-  font-style: italic;
 		animation: 5s infinite alternate emoji-floating;
 		animation-delay: var(--delay);
 		animation-play-state: paused;
+		font-style: italic;
 	}
 }
 
@@ -132,9 +130,9 @@ const appConfig = useAppConfig()
 	}
 
 	.split-char {
-  font-weight: 700;
-  font-style: italic;
 		animation-play-state: running;
+		font-style: italic;
+		font-weight: 700;
 	}
 }
 
