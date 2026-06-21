@@ -1,6 +1,6 @@
 ---
-title: ret2csu
-description: 讲述关于ret2csu的故事，并根据ret2csu、pwn、栈溢出给出pwn。
+title: Pwn-ret2csu
+description: pwn-第8部分ret2csu学习
 date: 2026-06-21 18:29:40
 updated: 2026-06-21 18:29:40
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260621104031_1782038254233_compressed%20(2).jpeg
@@ -8,7 +8,7 @@ categories: [pwn]
 tags: [ret2csu, pwn, 栈溢出]
 ---
 
-## ret2csu
+## Pwn-ret2csu
 
 ::alert{icon="tabler:files" color="var(--c-accent)" title="ret2csu解释"}
 
