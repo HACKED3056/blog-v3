@@ -107,14 +107,15 @@
     "charCount": 39808
   },
   "posts/2026/Pwn-ret2libc": {
-    "hash": "739de013983a1e82ebfbeda7c0f8dca84312b321c38ce9d7246124098b5a1207",
+    "hash": "6579d2c527922e1ddb739f6bf7f378dd03f36d5bc3532618a08f7bcdddd09c53",
     "headings": [
       "PWN-Ret2libc",
       "[2021 鹤城杯]babyof",
       "[Zero-G 2026] Format Station",
-      "[御网杯2026]PWN3_Pro"
+      "[御网杯2026]PWN3_Pro",
+      "[ISCC-2026 练武pwn2]"
     ],
-    "charCount": 24957
+    "charCount": 28994
   },
   "posts/2026/AI动画模型（用于进行编程语言的底层动画理解）": {
     "hash": "0838c38168036944ca63616d40fa80be35589d1456eadd26426295e50aa8e0d1",
@@ -213,12 +214,13 @@
     "charCount": 22725
   },
   "posts/2026/Pwn-ret2syscall": {
-    "hash": "b5293f228b31c8b46632ca98b72ca72b31e65481c7863b455fc9f5e609996257",
+    "hash": "cba803d9134e27d08e3bf40d6e37c544063d044b2cc8ce6affc96a22dc719039",
     "headings": [
       "原理",
-      "[CISCN 2023 初赛]烧烤摊儿"
+      "[CISCN 2023 初赛]烧烤摊儿",
+      "[LitCTF 2026]  lit_ret2syscall32"
     ],
-    "charCount": 8563
+    "charCount": 13727
   },
   "posts/2026/unictf_2026": {
     "hash": "60182ac9ba15d9b22ae47a51a8e663c3e2bb5f958ce93cb72228bdef76d56979",
@@ -246,5 +248,24 @@
       "测试用例"
     ],
     "charCount": 18053
+  },
+  "posts/2026/HACKED的pwn脚本工具": {
+    "hash": "2571d3882943f022aa5691761fe78c8c499e9d7fa08b82fa02f77ba995b50637",
+    "headings": [
+      "HACKED的pwn脚本工具",
+      "前言",
+      "pwn-libc快速识别和下载绑定脚本-PWN_LIBC_TOOL v2.0",
+      "syscall地址查询-PWN_SYSCALL_TOOL v1.0"
+    ],
+    "charCount": 88449
+  },
+  "posts/2026/ret2csu": {
+    "hash": "7f4b8c3cf619275ffe295119189a7debdde7d94cf62f6a321b566d72cdaed66b",
+    "headings": [
+      "ret2csu",
+      "历史因素",
+      "[HNCTF 2022 WEEK2] ret2csu"
+    ],
+    "charCount": 13602
   }
 }
