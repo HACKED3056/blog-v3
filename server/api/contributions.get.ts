@@ -57,6 +57,12 @@ const editLog: { path: string; date: string; newH2: number; charGrowth: number }
 	        "date": "2026-07-07",
 	        "newH2": 1,
 	        "charGrowth": 2202
+	    },
+	    {
+	        "path": "posts/2026/HACKED的pwn脚本工具",
+	        "date": "2026-07-11",
+	        "newH2": 1,
+	        "charGrowth": 1978
 	    }
 	]
 // @edit-log-end

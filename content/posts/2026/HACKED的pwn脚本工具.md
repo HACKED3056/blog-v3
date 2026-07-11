@@ -1759,7 +1759,85 @@ if __name__ == '__main__':
 
 ---
 
-## syscall地址查询-PWN_SYSCALL_TOOL v1.0
+## syscall地址查询-PWN_SYSCALL_TOOL 
+
+仓库链接:
+
+::alert{icon="tabler:files" color="var(--c-accent)" title="HACKED的脚本gitee仓库"}
+
+[脚本下载，点击跳转](https://gitee.com/ASUS_HACKED/cybersecurity/tree/%E6%AF%94%E8%B5%9B%E9%99%84%E4%BB%B6/HACKED%E7%9A%84%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7/%E5%88%B6%E4%BD%9C%E7%9A%84%E5%B7%A5%E5%85%B7/pwn)
+::
+
+### PWN_SYSCALL_TOOL 更新日志
+
+### v1.1
+
+1. 数据结构重构 
+
+| 项目                | v1.0                              | v1.1                                         |
+| ------------------- | --------------------------------- | -------------------------------------------- |
+| `GADGETS_*`         | `(name, pattern)` 二元组          | `(name, pattern, max_instr)` 三元组          |
+| `key_gadgets`       | `['pop rax', ...]` 字符串列表     | `[('pop rax', 8), ...]` 元组列表             |
+| `find_gadgets` 返回 | `dict[name] = (addr, asm)` 单结果 | `dict[name] = [(addr, asm), ...]` 多结果列表 |
+
+2. syscall 后备搜索（核心新增功能）
+
+- **新增 `find_syscall_ret_raw()` 函数**：直接搜索二进制 `\x0f\x05\xc3`（syscall; ret）字节序列
+- **自动 fallback**：当 ROPgadget 找不到 / 崩溃 / 不可用时触发，保证 amd64 架构总能找到 syscall
+- **pattern 修正**：`syscall` → `syscall\s*;\s*ret`，要求以 ret 结尾
+
+3. 异常处理加固
+
+所有 elftools 相关函数均加 `try/except` 防止崩溃：
+
+- `vaddr_from_offset()`
+- `find_writable_sections()`
+- `find_binsh()`
+- `run_ropgadget()`
+
+4. `analyze()` 重构为双层结构
+
+```python
+# v1.0: 单层
+def analyze(binary):
+    ...
+
+# v1.1: 双层，analyze() 捕获所有异常
+def analyze(binary):
+    try:
+        _analyze_inner(binary)
+    except Exception as e:
+        print(f"[!] 分析出错: {e}")
+```
+
+5. 菜单交互优化
+
+| 项目     | v1.0                       | v1.1                                                         |
+| -------- | -------------------------- | ------------------------------------------------------------ |
+| 展示时机 | 分段展示，每段单独按 Enter | **先完整展示所有结果**（gadget摘要 + 可写段 + /bin/sh + 模板），**最后统一交互** |
+| 搜索提示 | 各段之间分散               | 仅末尾一次                                                   |
+| 搜索方式 | 仅 gadget 名关键词         | 支持 `all` / 关键词 / 空（全部）                             |
+
+6. gadget 显示增强
+
+- **新增表头**：`指令(39) 数量(5) 地址(20)`
+- **显示全部数量**：每个 gadget 类型标注匹配总数，超过 5 个时提示可单独查看
+- **三种搜索模式**：
+  - `all` / 空 → 显示所有类型的全部结果
+  - 关键词 → 仅显示匹配类型的全部结果
+
+7. 其他改进
+
+- `run_ropgadget()` 增加 `stderr` 诊断输出和分异常类型处理
+- `run_ropgadget()` 失败时打印 `（可能是中文路径或崩溃）` 提示
+- banner 版本号更新为 `v1.1`
+- `openat` syscall 号（257）加入 `SYSCALL_NUMS`
+
+
+
+---
+
+### V1.0
 
 ret2syscall 快速搜索工具，支持 32-bit / 64-bit ELF 二进制。
 
@@ -1882,46 +1960,9 @@ python syscall_tool.py
 - `execve` 调用示例代码
 - 无 `/bin/sh` 时的手动写入代码
 
-### 示例输出
+### 
 
-```asm
-    ┌────────────────────────────────────────────────┐
-    │  目标: ret2syscall32                           │
-    │  架构: i386 (32-bit)                           │
-    └────────────────────────────────────────────────┘
 
-  [*] 搜索 syscall gadget ...
-
-    [+] pop eax                                  0x080491a6  (pop eax ; ret)
-    [+] pop ebx                                  0x08049022  (pop ebx ; ret)
-    [+] pop ecx; pop ebx                         0x080491b0  (pop ecx ; pop ebx ; ret)
-    [+] pop edx                                  0x080491b6  (pop edx ; ret)
-    [+] mov [edx], eax                           0x080491bb  (mov dword ptr [edx], eax ; ret)
-    [+] int 0x80                                 0x080491c1  (int 0x80)
-
-  [*] 可写段 (全局变量) ...
-
-    [+] .bss           addr=0x804b360  size=0x140  end=0x804b4a0
-
-    >>> 推荐 data_buf: 0x804b360
-
-  [*] 搜索 /bin/sh ...
-
-    [-] 并没有纯净的 /bin/sh
-        需要 mov [edx], eax 手动写入 "/bin" + "/sh\0"
-
-    ┌─ exploit.py 模板 (i386) ─────────────────────┐
-
-    from pwn import *
-    context(os='linux', arch='i386')
-
-    pop_eax          = 0x080491a6   # pop eax ; ret
-    pop_ecx_ebx      = 0x080491b0   # pop ecx ; pop ebx ; ret
-    pop_edx          = 0x080491b6   # pop edx ; ret
-    mov_edx_eax      = 0x080491bb   # mov [edx], eax ; ret
-    int_0x80         = 0x080491c1   # int 0x80
-    data_buf         = 0x804b360    # .bss 可写缓冲区
-```
 
 ### 文件结构
 
@@ -1936,658 +1977,7 @@ python syscall_tool.py
 └── README.md            # 本文件
 ```
 
-### 脚本源码
-
-```python
-#!/usr/bin/env python3
-"""
-PWN_SYSCALL_TOOL v1.0 - ret2syscall 快速搜索工具 (32-bit / 64-bit 通用)
-交互式菜单选择二进制文件, 自动完成:
-  1. 架构检测 (i386 / amd64)
-  2. syscall gadget 搜索
-  3. 可写全局变量查找
-  4. /bin/sh 字符串搜索
-  5. exploit 模板输出
-"""
-
-import sys
-import subprocess
-import re
-import os
-import stat
-import glob as globmod
-
-# Windows 终端 UTF-8 支持
-if sys.platform == 'win32':
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
-    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
-    # Windows 10+ 启用 ANSI 转义序列
-    os.system('')
-
-# ── ANSI 颜色 ──
-C_RESET   = '\033[0m'
-C_GREEN   = '\033[32m'      # 地址
-C_YELLOW  = '\033[33m'      # gadget 指令
-C_CYAN    = '\033[36m'      # 段名 / 标题
-C_RED     = '\033[31m'      # 未找到
-C_MAGENTA = '\033[35m'      # 推荐地址
-C_BOLD    = '\033[1m'       # 加粗
-
-
-def _c(color, text):
-    """给文本上色"""
-    return f"{color}{text}{C_RESET}"
-
-
-def _clear_screen():
-    """清屏"""
-    os.system('cls' if sys.platform == 'win32' else 'clear')
-
-
-def smart_input(prompt=""):
-    """支持 Ctrl+L 清屏的 input"""
-    sys.stdout.write(prompt)
-    sys.stdout.flush()
-    buf = ""
-    while True:
-        if sys.platform == 'win32':
-            import msvcrt
-            ch = msvcrt.getwch()
-        else:
-            import tty, termios
-            fd = sys.stdin.fileno()
-            old = termios.tcgetattr(fd)
-            try:
-                tty.setraw(fd)
-                ch = sys.stdin.read(1)
-            finally:
-                termios.tcsetattr(fd, termios.TCSADRAIN, old)
-
-        if ch == '\x0c':  # Ctrl+L
-            _clear_screen()
-            sys.stdout.write(prompt + buf)
-            sys.stdout.flush()
-        elif ch == '\r' or ch == '\n':  # Enter
-            sys.stdout.write('\n')
-            return buf
-        elif ch == '\x03':  # Ctrl+C
-            sys.stdout.write('\n')
-            raise KeyboardInterrupt
-        elif ch == '\x7f' or ch == '\b':  # Backspace
-            if buf:
-                buf = buf[:-1]
-                sys.stdout.write('\b \b')
-                sys.stdout.flush()
-        elif ch.isprintable():
-            buf += ch
-            sys.stdout.write(ch)
-            sys.stdout.flush()
-
-from elftools.elf.elffile import ELFFile
-
-# ──────────────────────────────────────────────────────────
-#  架构相关 gadget 定义
-# ──────────────────────────────────────────────────────────
-
-GADGETS_32 = [
-    ("pop eax",                     r"pop eax\s*;\s*ret"),
-    ("pop ebx",                     r"pop ebx\s*;\s*ret"),
-    ("pop ecx",                     r"pop ecx\s*;\s*ret"),
-    ("pop edx",                     r"pop edx\s*;\s*ret"),
-    ("pop ecx; pop ebx",            r"pop ecx\s*;\s*pop ebx\s*;\s*ret"),
-    ("pop edx; pop ecx; pop ebx",   r"pop edx\s*;\s*pop ecx\s*;\s*pop ebx\s*;\s*ret"),
-    ("mov [edx], eax",              r"mov dword ptr \[edx\]\s*,\s*eax\s*;\s*ret"),
-    ("mov [ecx], eax",              r"mov dword ptr \[ecx\]\s*,\s*eax\s*;\s*ret"),
-    ("mov [ebx], eax",              r"mov dword ptr \[ebx\]\s*,\s*eax\s*;\s*ret"),
-    ("int 0x80",                    r"int 0x80"),
-    ("pop eax; pop ebx; pop ecx; pop edx",
-        r"pop eax\s*;\s*pop ebx\s*;\s*pop ecx\s*;\s*pop edx\s*;\s*ret"),
-]
-
-GADGETS_64 = [
-    ("pop rax",                     r"pop rax\s*;\s*ret"),
-    ("pop rdi",                     r"pop rdi\s*;\s*ret"),
-    ("pop rsi",                     r"pop rsi\s*;\s*ret"),
-    ("pop rdx",                     r"pop rdx\s*;\s*ret"),
-    ("pop rcx",                     r"pop rcx\s*;\s*ret"),
-    ("pop r8",                      r"pop r8\s*;\s*ret"),
-    ("pop r9",                      r"pop r9\s*;\s*ret"),
-    ("pop rsi; pop r15",            r"pop rsi\s*;\s*pop r15\s*;\s*ret"),
-    ("pop rdx; pop r12",            r"pop rdx\s*;\s*pop r12\s*;\s*ret"),
-    ("pop rdx; pop rbx",            r"pop rdx\s*;\s*pop rbx\s*;\s*ret"),
-    ("pop rdx; pop rcx; pop rbx",   r"pop rdx\s*;\s*pop rcx\s*;\s*pop rbx\s*;\s*ret"),
-    ("mov [rdx], rax",              r"mov qword ptr \[rdx\]\s*,\s*rax\s*;\s*ret"),
-    ("mov [rsi], rax",              r"mov qword ptr \[rsi\]\s*,\s*rax\s*;\s*ret"),
-    ("mov [rdi], rax",              r"mov qword ptr \[rdi\]\s*,\s*rax\s*;\s*ret"),
-    ("mov [rcx], rax",              r"mov qword ptr \[rcx\]\s*,\s*rax\s*;\s*ret"),
-    ("syscall",                     r"syscall"),
-    ("pop rax; pop rdi; pop rsi; pop rdx",
-        r"pop rax\s*;\s*pop rdi\s*;\s*pop rsi\s*;\s*pop rdx\s*;\s*ret"),
-]
-
-ARCH_CONFIG = {
-    'i386': {
-        'gadgets': GADGETS_32,
-        'ropfilter': 'pop|ret|int|mov',
-        'ptr_size': 4,
-        'key_gadgets': [
-            'pop eax', 'pop ebx', 'pop ecx', 'pop edx',
-            'pop ecx; pop ebx', 'pop edx; pop ecx; pop ebx',
-            'mov [edx], eax', 'mov [ecx], eax', 'mov [ebx], eax',
-            'int 0x80', 'pop eax; pop ebx; pop ecx; pop edx',
-        ],
-        'template_vars': [
-            ('pop_eax',         'pop eax',                    'pop eax ; ret'),
-            ('pop_ebx',         'pop ebx',                    'pop ebx ; ret'),
-            ('pop_ecx',         'pop ecx',                    'pop ecx ; ret'),
-            ('pop_edx',         'pop edx',                    'pop edx ; ret'),
-            ('pop_ecx_ebx',     'pop ecx; pop ebx',           'pop ecx ; pop ebx ; ret'),
-            ('pop_edx_ecx_ebx', 'pop edx; pop ecx; pop ebx',  'pop edx ; pop ecx ; pop ebx ; ret'),
-            ('mov_edx_eax',     'mov [edx], eax',             'mov [edx], eax ; ret'),
-            ('mov_ecx_eax',     'mov [ecx], eax',             'mov [ecx], eax ; ret'),
-            ('mov_ebx_eax',     'mov [ebx], eax',             'mov [ebx], eax ; ret'),
-            ('int_0x80',        'int 0x80',                   'int 0x80'),
-        ],
-    },
-    'amd64': {
-        'gadgets': GADGETS_64,
-        'ropfilter': 'pop|ret|syscall|mov',
-        'ptr_size': 8,
-        'key_gadgets': [
-            'pop rax', 'pop rdi', 'pop rsi', 'pop rdx',
-            'pop rcx', 'pop r8', 'pop r9',
-            'pop rsi; pop r15', 'pop rdx; pop r12',
-            'pop rdx; pop rbx', 'pop rdx; pop rcx; pop rbx',
-            'mov [rdx], rax', 'mov [rsi], rax',
-            'mov [rdi], rax', 'mov [rcx], rax',
-            'syscall', 'pop rax; pop rdi; pop rsi; pop rdx',
-        ],
-        'template_vars': [
-            ('pop_rax',         'pop rax',                    'pop rax ; ret'),
-            ('pop_rdi',         'pop rdi',                    'pop rdi ; ret'),
-            ('pop_rsi',         'pop rsi',                    'pop rsi ; ret'),
-            ('pop_rdx',         'pop rdx',                    'pop rdx ; ret'),
-            ('pop_rcx',         'pop rcx',                    'pop rcx ; ret'),
-            ('pop_r8',          'pop r8',                     'pop r8 ; ret'),
-            ('pop_r9',          'pop r9',                     'pop r9 ; ret'),
-            ('pop_rsi_r15',     'pop rsi; pop r15',           'pop rsi ; pop r15 ; ret'),
-            ('pop_rdx_r12',     'pop rdx; pop r12',           'pop rdx ; pop r12 ; ret'),
-            ('pop_rdx_rbx',     'pop rdx; pop rbx',           'pop rdx ; pop rbx ; ret'),
-            ('pop_rdx_rcx_rbx', 'pop rdx; pop rcx; pop rbx',  'pop rdx ; pop rcx ; pop rbx ; ret'),
-            ('mov_rdx_rax',     'mov [rdx], rax',             'mov [rdx], rax ; ret'),
-            ('mov_rsi_rax',     'mov [rsi], rax',             'mov [rsi], rax ; ret'),
-            ('mov_rdi_rax',     'mov [rdi], rax',             'mov [rdi], rax ; ret'),
-            ('mov_rcx_rax',     'mov [rcx], rax',             'mov [rcx], rax ; ret'),
-            ('syscall',         'syscall',                    'syscall'),
-        ],
-    },
-}
-
-SYSCALL_NUMS = {
-    'i386': {
-        'read': 3, 'write': 4, 'open': 5, 'close': 6,
-        'execve': 11, 'mmap': 192, 'mprotect': 125,
-    },
-    'amd64': {
-        'read': 0, 'write': 1, 'open': 2, 'close': 3,
-        'execve': 59, 'mmap': 9, 'mprotect': 10,
-    },
-}
-
-
-# ──────────────────────────────────────────────────────────
-#  工具函数
-# ──────────────────────────────────────────────────────────
-
-def is_elf(filepath):
-    """快速判断文件是否是 ELF"""
-    try:
-        with open(filepath, 'rb') as f:
-            return f.read(4) == b'\x7fELF'
-    except (OSError, PermissionError):
-        return False
-
-
-def detect_arch(binary):
-    with open(binary, 'rb') as f:
-        elf = ELFFile(f)
-        machine = elf.header['e_machine']
-        if machine == 'EM_386':
-            return 'i386'
-        elif machine == 'EM_X86_64':
-            return 'amd64'
-        else:
-            return None
-
-
-def file_size_str(filepath):
-    """返回人类可读的文件大小"""
-    try:
-        sz = os.path.getsize(filepath)
-        if sz < 1024:
-            return f"{sz}B"
-        elif sz < 1024 * 1024:
-            return f"{sz/1024:.1f}K"
-        else:
-            return f"{sz/1024/1024:.1f}M"
-    except OSError:
-        return "?"
-
-
-def scan_binaries(directory):
-    """扫描目录下的 ELF 可执行文件"""
-    results = []
-    try:
-        entries = sorted(os.listdir(directory))
-    except OSError:
-        return results
-
-    for name in entries:
-        path = os.path.join(directory, name)
-        if not os.path.isfile(path):
-            continue
-        if is_elf(path):
-            arch = detect_arch(path)
-            if arch:
-                arch_tag = "i386" if arch == "i386" else "x64 "
-                sz = file_size_str(path)
-                results.append((path, name, arch_tag, sz))
-    return results
-
-
-# ──────────────────────────────────────────────────────────
-#  菜单交互
-# ──────────────────────────────────────────────────────────
-
-def _display_width(s):
-    """计算字符串的终端显示宽度 (中文算2, ASCII算1)"""
-    w = 0
-    for ch in s:
-        if '一' <= ch <= '鿿' or '　' <= ch <= '〿' or '＀' <= ch <= '￯':
-            w += 2
-        else:
-            w += 1
-    return w
-
-
-def _box_line(content, width):
-    """生成一行 box 内容, 自动对齐中文宽度"""
-    pad = width - _display_width(content)
-    return f"║{content}{' ' * pad}║"
-
-
-def print_banner():
-    print()
-    print(" ██╗  ██╗ █████╗  ██████╗██╗  ██╗███████╗██████╗ ")
-    print(" ██║  ██║██╔══██╗██╔════╝██║ ██╔╝██╔════╝██╔══██╗")
-    print(" ███████║███████║██║     █████╔╝ █████╗  ██║  ██║")
-    print(" ██╔══██║██╔══██║██║     ██╔═██╗ ██╔══╝  ██║  ██║")
-    print(" ██║  ██║██║  ██║╚██████╗██║  ██╗███████╗██████╔╝")
-    print(" ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═════╝")
-    print(f"{'PWN_SYSCALL_TOOL v1.0':>52}")
-    print()
-
-
-def _menu_line(text, width):
-    """生成菜单框的一行, text 可含中文"""
-    pad = width - _display_width(text)
-    return f"│{text}{' ' * pad}│"
-
-
-def select_binary():
-    """交互式选择二进制文件, 返回文件路径或 None"""
-    W = 46  # 菜单框内部显示宽度
-    top_title = "─ 选择目标 "
-    dashes_fill = "─" * (W - _display_width(top_title))
-    while True:
-        print()
-        print(f"    ┌{top_title}{dashes_fill}┐")
-        print(f"    │{' ' * W}│")
-        print(f"    {_menu_line('  [1] 扫描当前目录', W)}")
-        print(f"    {_menu_line('  [2] 手动输入路径', W)}")
-        print(f"    {_menu_line('  [3] 扫描指定目录', W)}")
-        print(f"    {_menu_line('  [0] 退出', W)}")
-        print(f"    │{' ' * W}│")
-        print(f"    └{'─' * W}┘")
-
-        choice = smart_input("\n  请选择 > ").strip()
-
-        if choice == '0':
-            return None
-
-        elif choice == '1':
-            directory = os.getcwd()
-            print(f"\n  扫描目录: {directory}\n")
-            binaries = scan_binaries(directory)
-            return pick_from_list(binaries, directory)
-
-        elif choice == '2':
-            path = smart_input("\n  请输入文件路径: ").strip().strip('"').strip("'")
-            if not path:
-                print("  [!] 路径为空")
-                continue
-            if not os.path.isfile(path):
-                print(f"  [!] 文件不存在: {path}")
-                continue
-            if not is_elf(path):
-                print(f"  [!] 不是 ELF 文件: {path}")
-                continue
-            return path
-
-        elif choice == '3':
-            directory = smart_input("\n  请输入目录路径: ").strip().strip('"').strip("'")
-            if not directory:
-                directory = os.getcwd()
-            if not os.path.isdir(directory):
-                print(f"  [!] 目录不存在: {directory}")
-                continue
-            print(f"\n  扫描目录: {directory}\n")
-            binaries = scan_binaries(directory)
-            return pick_from_list(binaries, directory)
-
-        else:
-            print("  [!] 无效选择")
-
-
-def pick_from_list(binaries, directory):
-    """从扫描结果列表中选择"""
-    if not binaries:
-        print("  [!] 未找到任何 ELF 可执行文件")
-        return None
-
-    print(f"  {'#':<4s} {'架构':<6s} {'大小':<8s} {'文件名'}")
-    print(f"  {'─'*4} {'─'*6} {'─'*8} {'─'*30}")
-    for i, (path, name, arch_tag, sz) in enumerate(binaries, 1):
-        print(f"  {i:<4d} {arch_tag:<6s} {sz:<8s} {name}")
-
-    print(f"\n  输入序号选择 (0=返回): ")
-    sel = smart_input("  > ").strip()
-
-    if sel == '0' or sel == '':
-        return None
-
-    try:
-        idx = int(sel) - 1
-        if 0 <= idx < len(binaries):
-            return binaries[idx][0]
-        else:
-            print(f"  [!] 无效序号: {sel}")
-            return None
-    except ValueError:
-        print(f"  [!] 请输入数字")
-        return None
-
-
-# ──────────────────────────────────────────────────────────
-#  分析函数
-# ──────────────────────────────────────────────────────────
-
-def run_ropgadget(binary, ropfilter):
-    # 尝试多种方式找到 ROPgadget
-    candidates = []
-    if sys.platform == 'win32':
-        # Windows: Scripts 目录下的脚本
-        for scripts_dir in [
-            os.path.join(os.path.dirname(sys.executable), 'Scripts'),
-            os.path.join(sys.prefix, 'Scripts'),
-        ]:
-            p = os.path.join(scripts_dir, 'ROPgadget')
-            if os.path.exists(p):
-                candidates.append([sys.executable, p])
-    # 通用: 直接调用
-    candidates.append(["ROPgadget"])
-    # 通用: python -m
-    candidates.append([sys.executable, "-m", "ROPgadget"])
-
-    for cmd_base in candidates:
-        cmd = cmd_base + ["--binary", binary, "--only", ropfilter]
-        try:
-            result = subprocess.run(cmd, capture_output=True, timeout=60)
-            stdout = result.stdout.decode('utf-8', errors='replace')
-            if stdout.strip() and "Gadgets information" in stdout:
-                return stdout
-        except (FileNotFoundError, subprocess.TimeoutExpired, OSError):
-            continue
-
-    # 全部失败, 打印诊断信息
-    print("    [!] ROPgadget 调用失败, 请确认已安装: pip install ROPgadget")
-    return None
-
-
-def parse_gadgets(output):
-    lines = []
-    for line in output.strip().splitlines():
-        m = re.match(r"(0x[0-9a-fA-F]+)\s*:\s*(.+)", line)
-        if m:
-            lines.append((m.group(1), m.group(2).strip()))
-    return lines
-
-
-def find_gadgets(binary, arch):
-    config = ARCH_CONFIG[arch]
-    output = run_ropgadget(binary, config['ropfilter'])
-    if output is None:
-        return {}
-    gadget_lines = parse_gadgets(output)
-    found = {}
-    for name, pattern in config['gadgets']:
-        for addr, asm in gadget_lines:
-            if re.search(pattern, asm, re.IGNORECASE):
-                found[name] = (addr, asm)
-                break
-    return found
-
-
-def find_writable_sections(binary):
-    writable = {}
-    with open(binary, "rb") as f:
-        elf = ELFFile(f)
-        for section in elf.iter_sections():
-            name = section.name
-            if name in ('.bss', '.data', '.got', '.got.plt'):
-                addr = section['sh_addr']
-                size = section['sh_size']
-                if size > 0:
-                    writable[name] = {'addr': addr, 'size': size, 'end': addr + size}
-    return writable
-
-
-def find_binsh(binary):
-    results = {}
-    targets = {'/bin/sh': b'/bin/sh\x00', '/bin/bash': b'/bin/bash\x00'}
-    with open(binary, "rb") as f:
-        data = f.read()
-    for name, pattern in targets.items():
-        offset = 0
-        found_list = []
-        while True:
-            idx = data.find(pattern, offset)
-            if idx == -1:
-                break
-            found_list.append(idx)
-            offset = idx + 1
-        if found_list:
-            results[name] = found_list
-    return results, data
-
-
-def vaddr_from_offset(binary, file_offset):
-    with open(binary, "rb") as f:
-        elf = ELFFile(f)
-        for segment in elf.iter_segments():
-            if segment['p_type'] != 'PT_LOAD':
-                continue
-            f_off = segment['p_offset']
-            vaddr = segment['p_vaddr']
-            filesz = segment['p_filesz']
-            if f_off <= file_offset < f_off + filesz:
-                return vaddr + (file_offset - f_off)
-    return None
-
-
-# ──────────────────────────────────────────────────────────
-#  分析 & 输出
-# ──────────────────────────────────────────────────────────
-
-def analyze(binary):
-    """对选定的二进制执行完整分析"""
-    arch = detect_arch(binary)
-    if arch is None:
-        print("  [!] 无法识别架构")
-        return
-
-    config = ARCH_CONFIG[arch]
-    basename = os.path.basename(binary)
-
-    arch_str = f"{arch} ({'32-bit' if arch == 'i386' else '64-bit'})"
-    W = 48
-    line1 = f"  目标: {_c(C_GREEN, basename)}"
-    line2 = f"  架构: {_c(C_CYAN, arch_str)}"
-    # 颜色码不占显示宽度, pad 按无色文本计算
-    plain1 = f"  目标: {basename}"
-    plain2 = f"  架构: {arch_str}"
-    pad1 = W - _display_width(plain1)
-    pad2 = W - _display_width(plain2)
-    print()
-    print(f"    {_c(C_CYAN, '┌')}{'─' * W}{_c(C_CYAN, '┐')}")
-    print(f"    {_c(C_CYAN, '│')}{line1}{' ' * pad1}{_c(C_CYAN, '│')}")
-    print(f"    {_c(C_CYAN, '│')}{line2}{' ' * pad2}{_c(C_CYAN, '│')}")
-    print(f"    {_c(C_CYAN, '└')}{'─' * W}{_c(C_CYAN, '┘')}")
-
-    # ── Gadget ────────────────────────────────────────────
-    print(f"\n  {_c(C_BOLD, '[*]')} 搜索 syscall gadget ...\n")
-    gadgets = find_gadgets(binary, arch)
-
-    for name in config['key_gadgets']:
-        if name in gadgets:
-            addr, asm = gadgets[name]
-            print(f"    {_c(C_GREEN, '[+]')} {name:<40s} {_c(C_GREEN, addr)}  ({_c(C_YELLOW, asm)})")
-        else:
-            print(f"    {_c(C_RED, '[-]')} {name:<40s} {_c(C_RED, '未找到')}")
-
-    # ── 可写段 ────────────────────────────────────────────
-    print(f"\n  {_c(C_BOLD, '[*]')} 可写段 (全局变量) ...\n")
-    writable = find_writable_sections(binary)
-    data_buf_candidates = []
-    for sec_name, info in sorted(writable.items(), key=lambda x: x[1]['addr']):
-        print(f"    {_c(C_GREEN, '[+]')} {_c(C_CYAN, sec_name):<22s} "
-              f"addr={_c(C_GREEN, hex(info['addr']))}  "
-              f"size={hex(info['size'])}  end={hex(info['end'])}")
-        if sec_name in ('.bss', '.data'):
-            data_buf_candidates.append(info['addr'])
-
-    if data_buf_candidates:
-        print(f"\n    {_c(C_MAGENTA, '>>>')} 推荐 data_buf: {_c(C_MAGENTA, ' / '.join(hex(a) for a in data_buf_candidates))}")
-
-    # ── /bin/sh ───────────────────────────────────────────
-    print(f"\n  [*] 搜索 /bin/sh ...\n")
-    binsh_results, data = find_binsh(binary)
-    binsh_vaddr = None
-
-    if '/bin/sh' in binsh_results:
-        for offset in binsh_results['/bin/sh']:
-            vaddr = vaddr_from_offset(binary, offset)
-            if vaddr:
-                print(f"    {_c(C_GREEN, '[+]')} /bin/sh  文件偏移={_c(C_GREEN, hex(offset))}  虚拟地址={_c(C_GREEN, hex(vaddr))}")
-                binsh_vaddr = vaddr
-            else:
-                print(f"    {_c(C_GREEN, '[+]')} /bin/sh  文件偏移={_c(C_GREEN, hex(offset))}")
-    elif '/bin/bash' in binsh_results:
-        for offset in binsh_results['/bin/bash']:
-            vaddr = vaddr_from_offset(binary, offset)
-            if vaddr:
-                print(f"    {_c(C_GREEN, '[+]')} /bin/bash  文件偏移={_c(C_GREEN, hex(offset))}  虚拟地址={_c(C_GREEN, hex(vaddr))}")
-                binsh_vaddr = vaddr
-            else:
-                print(f"    {_c(C_GREEN, '[+]')} /bin/bash  文件偏移={_c(C_GREEN, hex(offset))}")
-    else:
-        print(f"    {_c(C_RED, '[-]')} 并没有纯净的 /bin/sh")
-        if arch == 'i386':
-            print(f"        需要 {_c(C_YELLOW, 'mov [edx], eax')} 手动写入 \"/bin\" + \"/sh\\0\"")
-        else:
-            print(f"        需要 {_c(C_YELLOW, 'mov [rdx], rax')} 手动写入 \"/bin//sh\" (8字节对齐)")
-
-    # ── exploit 模板 ──────────────────────────────────────
-    print(f"\n    {_c(C_CYAN, '┌')}─ {_c(C_BOLD, f'exploit.py 模板 ({arch})')} {'─' * (25 - len(arch))}{_c(C_CYAN, '┐')}\n")
-
-    ctx_line = f"context(os='linux', arch='{arch}')"
-    print(f"    {_c(C_YELLOW, 'from pwn import *')}")
-    print(f"    {_c(C_YELLOW, ctx_line)}")
-    print()
-
-    for var_name, gadget_key, comment in config['template_vars']:
-        if gadget_key in gadgets:
-            addr, _ = gadgets[gadget_key]
-            print(f"    {var_name:<16s} = {_c(C_GREEN, addr)}   # {comment}")
-        else:
-            print(f"    {var_name:<16s} = {_c(C_RED, '???')}       # {comment}  {_c(C_RED, '[未找到]')}")
-
-    if data_buf_candidates:
-        print(f"    {'data_buf':<16s} = {_c(C_MAGENTA, hex(data_buf_candidates[0]))}   # .bss 可写缓冲区")
-    if binsh_vaddr:
-        print(f"    {'binsh':<16s} = {_c(C_MAGENTA, hex(binsh_vaddr))}   # \"/bin/sh\"")
-
-    print()
-    cc = C_CYAN  # 注释颜色
-    if arch == 'i386':
-        print(f"    {_c(cc, '#')} execve(\"/bin/sh\", 0, 0)  =>  eax=0xb, ebx=binsh, ecx=0, edx=0")
-        print(f"    {_c(cc, '#')} payload += p32(pop_eax) + p32(0xb)")
-        print(f"    {_c(cc, '#')} payload += p32(pop_ecx_ebx) + p32(0) + p32(binsh)")
-        print(f"    {_c(cc, '#')} payload += p32(pop_edx) + p32(0)")
-        print(f"    {_c(cc, '#')} payload += p32(int_0x80)")
-        print()
-        print(f"    {_c(cc, '#')} 无 /bin/sh 时手动写入:")
-        print(f"    {_c(cc, '#')} payload += p32(pop_eax) + p32({_c(C_GREEN, '0x6e69622f')})  \"/bin\"")
-        print(f"    {_c(cc, '#')} payload += p32(pop_edx) + p32(data_buf)")
-        print(f"    {_c(cc, '#')} payload += p32(mov_edx_eax)")
-        print(f"    {_c(cc, '#')} payload += p32(pop_eax) + p32({_c(C_GREEN, '0x0068732f')})  \"/sh\\0\"")
-        print(f"    {_c(cc, '#')} payload += p32(pop_edx) + p32(data_buf + 4)")
-        print(f"    {_c(cc, '#')} payload += p32(mov_edx_eax)")
-    else:
-        print(f"    {_c(cc, '#')} execve(\"/bin/sh\", 0, 0)  =>  rax=0x3b, rdi=binsh, rsi=0, rdx=0")
-        print(f"    {_c(cc, '#')} payload += p64(pop_rax) + p64(0x3b)")
-        print(f"    {_c(cc, '#')} payload += p64(pop_rdi) + p64(binsh)")
-        print(f"    {_c(cc, '#')} payload += p64(pop_rsi) + p64(0)")
-        print(f"    {_c(cc, '#')} payload += p64(pop_rdx) + p64(0)")
-        print(f"    {_c(cc, '#')} payload += p64(syscall)")
-        print()
-        print(f"    {_c(cc, '#')} 无 /bin/sh 时手动写入 (8字节对齐):")
-        print(f"    {_c(cc, '#')} payload += p64(pop_rax) + p64({_c(C_GREEN, '0x68732f2f6e69622f')})  \"/bin//sh\"")
-        print(f"    {_c(cc, '#')} payload += p64(pop_rdx) + p64(data_buf)")
-        print(f"    {_c(cc, '#')} payload += p64(mov_rdx_rax)")
-
-    print()
-
-
-# ──────────────────────────────────────────────────────────
-#  主循环
-# ──────────────────────────────────────────────────────────
-
-def main():
-    _clear_screen()
-    try:
-        while True:
-            print_banner()
-            binary = select_binary()
-            if binary is None:
-                print("\n  再见!\n")
-                break
-
-            analyze(binary)
-
-            print(f"  {'─'*56}")
-            cont = smart_input("  按 Enter 继续选择, 输入 q 退出 > ").strip().lower()
-            if cont == 'q':
-                print("\n  再见!\n")
-                break
-    except KeyboardInterrupt:
-        print("\n\n  再见!\n")
-
-
-if __name__ == "__main__":
-    main()
-
-```
+### 
 
 ```md wrap
 <!-- 你可以在此处书写大纲，并在上方完成文章 -->

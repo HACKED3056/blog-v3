@@ -251,14 +251,14 @@
     "charCount": 18053
   },
   "posts/2026/HACKED的pwn脚本工具": {
-    "hash": "2571d3882943f022aa5691761fe78c8c499e9d7fa08b82fa02f77ba995b50637",
+    "hash": "7608e4dbbe0a63ebbb7d19efcbdf7cc54dae1219114785301149339dc5811110",
     "headings": [
       "HACKED的pwn脚本工具",
       "前言",
       "pwn-libc快速识别和下载绑定脚本-PWN_LIBC_TOOL v2.0",
-      "syscall地址查询-PWN_SYSCALL_TOOL v1.0"
+      "syscall地址查询-PWN_SYSCALL_TOOL "
     ],
-    "charCount": 88449
+    "charCount": 65995
   },
   "posts/2026/ret2csu": {
     "hash": "7f4b8c3cf619275ffe295119189a7debdde7d94cf62f6a321b566d72cdaed66b",
