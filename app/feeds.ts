@@ -63,12 +63,7 @@ export default [
 				avatar: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260519153227_94a0a929f3a0a33c9b65237010e5da51.png",
 				date: "2026-05-19",
 			},
-		],
-	},
-	{
-		name: "CTF-Pwner",
-		desc: "CTF-Pwner",
-t		{
+			{
 				author: "凌安的小窝",
 				title: "凌安的小窝",
 				desc: "练习ctf-web两个月半哦",
@@ -77,6 +72,11 @@ t		{
 				avatar: "https://img2024.cnblogs.com/blog/3823631/202607/3823631-20260705132302916-2066211351.jpg",
 				date: "2026-07-13",
 			},
+		],
+	},
+	{
+		name: "CTF-Pwner",
+		desc: "CTF-Pwner",
 		entries: [
 			{
 				author: "HFTTC",
