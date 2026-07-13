@@ -234,6 +234,7 @@ ${packageJson.homepage}
 					const prev = typeof prevRaw === "object" && prevRaw !== null && Array.isArray(prevRaw.headings) ? prevRaw : { hash: typeof prevRaw === "string" ? prevRaw : "", headings: [] as string[], charCount: 0 }
 
 					const changed = prev.hash !== hash
+					const isNewFile = !(stem in cache)
 
 					cache[stem] = { hash, headings, charCount }
 					await writeFile(cachePath, JSON.stringify(cache, null, 2))
@@ -245,7 +246,7 @@ ${packageJson.homepage}
 
 						const newHeadings = headings.filter(h => !prev.headings.includes(h)); const newH2 = newHeadings.length
 						const charGrowth = Math.max(0, charCount - prev.charCount)
-						const hasGrowth = !!(prev.hash) && newH2 > 0
+						const hasGrowth = !isNewFile && newH2 > 0
 
 						if (hasGrowth) {
 							const logPath = resolve(process.cwd(), 'edit-log.json')
