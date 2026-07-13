@@ -68,6 +68,15 @@ export default [
 	{
 		name: "CTF-Pwner",
 		desc: "CTF-Pwner",
+t		{
+				author: "凌安的小窝",
+				title: "凌安的小窝",
+				desc: "练习ctf-web两个月半哦",
+				link: "https://oneloveyushi.top",
+				icon: "https://img2024.cnblogs.com/blog/3823631/202607/3823631-20260705132302916-2066211351.jpg",
+				avatar: "https://img2024.cnblogs.com/blog/3823631/202607/3823631-20260705132302916-2066211351.jpg",
+				date: "2026-07-13",
+			},
 		entries: [
 			{
 				author: "HFTTC",
