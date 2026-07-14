@@ -343,6 +343,7 @@ r.interactive()
 - 本地测试需要用 patchelf 绑定题目 libc 和链接器
 - `/bin/sh` 直接从 libc 搜索，不需要写入 BSS
 - `ret` gadget 用于栈对齐，避免 movaps 崩溃
+- 当然没有`pop rdi；ret`的时候我们也可以去libc文件里边偷一个，利用libc_tools找`pop rdi;ret`远远比第三种写法更加快
 
 或者用HACKED的脚本获取libc连接器
 
