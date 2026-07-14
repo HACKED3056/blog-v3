@@ -63,6 +63,12 @@ const editLog: { path: string; date: string; newH2: number; charGrowth: number }
         "date": "2026-07-11",
         "newH2": 1,
         "charGrowth": 1978
+    },
+    {
+        "path": "posts/2026/Pwn-ret2csu",
+        "date": "2026-07-14",
+        "newH2": 1,
+        "charGrowth": 0
     }
 ]
 // @edit-log-end
