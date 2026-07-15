@@ -7,15 +7,6 @@ const runtimeConfig = useRuntimeConfig()
 // 响应头不正确时，stats.value 可能会是字符串，首次属性访问可能为 undefined
 const { data: stats } = useFetch('/api/stats')
 
-const { data: latestArticle } = await useAsyncData('stats:latest-update', () =>
-  queryCollection('content')
-    .where('stem', 'LIKE', 'posts/%')
-    .order('updated', 'DESC')
-    .limit(1)
-    .all()
-)
-const latestUpdate = computed(() => latestArticle.value?.[0]?.updated)
-
 const yearlyTip = computed(() => Object
 	.entries(stats.value?.annual || {})
 	.reverse()
@@ -30,9 +21,9 @@ const blogStats = [{
 }, {
 	label: '上次更新',
 	value: () => h(UtilDate, {
-		date: latestUpdate.value || runtimeConfig.public.buildTime,
+		date: runtimeConfig.public.buildTime,
 		relative: true,
-		tipPrefix: latestUpdate.value ? '' : '构建于',
+		tipPrefix: '构建于',
 	}),
 }, {
 	label: '总字数',
