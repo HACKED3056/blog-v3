@@ -10,8 +10,6 @@ const { data: stats } = useFetch('/api/stats')
 const { data: latestArticle } = await useAsyncData('stats:latest-update', () =>
   queryCollection('content')
     .where('stem', 'LIKE', 'posts/%')
-    .where('stats', '<>', false)
-    .select('updated', 'path')
     .order('updated', 'DESC')
     .limit(1)
     .all()
