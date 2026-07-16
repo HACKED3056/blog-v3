@@ -9,5 +9,13 @@
       " ret2csu 思维模板（备忘）"
     ],
     "charCount": 25181
+  },
+  "posts/2026/Pwn-ret2reg": {
+    "hash": "592b1914496eae4c0ab5f61a5af72cb4efac4f745ceeed6ca3f93d869d760663",
+    "headings": [
+      "Pwn-ret2reg",
+      "ret2reg32"
+    ],
+    "charCount": 6386
   }
 }
