@@ -62,6 +62,7 @@ export default [
 				icon: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260519153227_94a0a929f3a0a33c9b65237010e5da51.png",
 				avatar: "https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492493/o_260519153227_94a0a929f3a0a33c9b65237010e5da51.png",
 				date: "2026-05-19",
+				comment: "是一个谦虚厉害的web手,Orz",
 			},
 			{
 				author: "Nxg7的第二个小窝",
