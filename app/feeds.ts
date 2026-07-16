@@ -18,8 +18,8 @@ export default [
 		],
 	},
 	{
-		name: "我的博客",
-		desc: "我的个人博客",
+		name: "HACKED的的小窝",
+		desc: "HACKED的的小窝",
 		entries: [myFeed,
 			{
 				author: "HACKED的仓库",
