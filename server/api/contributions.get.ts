@@ -81,12 +81,29 @@ const editLog: { path: string; date: string; newH2: number; charGrowth: number }
 
 export default defineEventHandler(async (event) => {
   const dailyCount = new Map<string, number>()
-  for (const entry of editLog) {
-    dailyCount.set(entry.date, (dailyCount.get(entry.date) || 0) + entry.newH2)
-  }
+
   const posts = await queryCollection(event, "content")
     .where("stem", "LIKE", "posts/%")
     .all()
+
+  // 记录新文章的创建日期（path:date），编辑旧文章不计入这里
+  const articleCreated = new Set<string>()
+  for (const post of posts) {
+    if (post.stats === false) continue
+    if (!post.date) continue
+    try {
+      const d = toZonedTemporal(post.date as string)
+      articleCreated.add(post.stem + ":" + d.year + "-" + String(d.month).padStart(2, "0") + "-" + String(d.day).padStart(2, "0"))
+    } catch { /* skip */ }
+  }
+
+  // edit-log 只算对旧文章的编辑，新文章的创建由下面 post 循环统计
+  for (const entry of editLog) {
+    if (articleCreated.has(entry.path + ":" + entry.date)) continue
+    dailyCount.set(entry.date, (dailyCount.get(entry.date) || 0) + entry.newH2)
+  }
+
+  // 每篇文章在其创建日期 +1
   for (const post of posts) {
     if (post.stats === false) continue
     if (!post.date) continue
