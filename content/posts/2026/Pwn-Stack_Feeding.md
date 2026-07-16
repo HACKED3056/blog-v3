@@ -1,6 +1,6 @@
 ---
 title: Pwn-Stack_Feeding
-description: Pwn第11部分学习Stack_Feedin
+description: pwn第10部分学习Stack_Feedin
 date: 2026-07-13 21:11:42
 updated: 2026-07-13 21:11:42
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260713131713_1782038185436_compressed.jpeg
