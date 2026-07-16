@@ -15,11 +15,14 @@ export default defineEventHandler(async (event) => {
 		annual: <Record<number, StatsEntry>>{},
 		categories: <CategoryEntry[]>[],
 		tags: <string[]>[],
+		lastUpdated: '',
 	}
 
 	const existedPath = new Map()
 
 	const posts = await queryCollection(event, 'content').all()
+
+	let latestDate = ''
 
 	const findOrCreateCategory = (
 		name: string,
@@ -83,7 +86,13 @@ export default defineEventHandler(async (event) => {
 				if (!stats.tags.includes(tag))
 					stats.tags.push(tag)
 			})
+
+		// 记录最新文章更新时间
+		if (post.updated && post.updated > latestDate)
+			latestDate = post.updated
 	}
+
+	stats.lastUpdated = latestDate
 
 	return stats
 })

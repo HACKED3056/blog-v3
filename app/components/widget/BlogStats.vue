@@ -21,9 +21,9 @@ const blogStats = [{
 }, {
 	label: '上次更新',
 	value: () => h(UtilDate, {
-		date: runtimeConfig.public.buildTime,
+		date: stats.value?.lastUpdated || runtimeConfig.public.buildTime,
 		relative: true,
-		tipPrefix: '构建于',
+		tipPrefix: stats.value?.lastUpdated ? '' : '构建于',
 	}),
 }, {
 	label: '总字数',
