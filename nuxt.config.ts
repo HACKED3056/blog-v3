@@ -269,15 +269,11 @@ ${packageJson.homepage}
 							if (startIdx >= 0 && endIdx >= 0) {
 								const before = apiText.slice(0, startIdx + startMark.length)
 								const after = apiText.slice(endIdx)
-																const jsonStr = JSON.stringify(log, null, 4)
-									.split('
-')
-									.map((l, i) => i === 0 ? l : '	' + l)
-									.join('
-')
-								apiText = before + '
-' + jsonStr + '
-' + after
+								const jsonStr = JSON.stringify(log, null, 4)
+									.split('\n')
+									.map((l, i) => i === 0 ? l : '\t' + l)
+									.join('\n')
+								apiText = before + '\n' + jsonStr + '\n' + after
 								await writeFile(apiPath, apiText)
 							}
 						}
