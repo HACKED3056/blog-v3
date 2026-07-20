@@ -244,6 +244,44 @@ ${packageJson.homepage}
 						const pad = (n: number) => String(n).padStart(2, '0')
 						const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
 
+
+						// 记录新增标题到 edit-log（仅对已有文章的编辑）
+						const newHeadings = headings.filter(h => !prev.headings.includes(h)); const newH2 = newHeadings.length
+						const charGrowth = Math.max(0, charCount - prev.charCount)
+						const hasGrowth = !isNewFile && newH2 > 0
+
+						if (hasGrowth) {
+							const logPath = resolve(process.cwd(), 'edit-log.json')
+							let log: { path: string; date: string; newH2: number; charGrowth: number }[] = []
+							try { log = JSON.parse(await readFile(logPath, 'utf-8')) }
+							catch { /* first run */ }
+
+							log.push({ path: stem, date: dateStr, newH2, charGrowth })
+							await writeFile(logPath, JSON.stringify(log))
+
+							// sync API inline array
+							const apiPath = resolve(process.cwd(), 'server/api/contributions.get.ts')
+							let apiText = await readFile(apiPath, 'utf-8')
+							const startMark = '// @edit-log-start'
+							const endMark = '// @edit-log-end'
+							const startIdx = apiText.indexOf(startMark)
+							const endIdx = apiText.indexOf(endMark)
+							if (startIdx >= 0 && endIdx >= 0) {
+								const before = apiText.slice(0, startIdx + startMark.length)
+								const after = apiText.slice(endIdx)
+																const jsonStr = JSON.stringify(log, null, 4)
+									.split('
+')
+									.map((l, i) => i === 0 ? l : '	' + l)
+									.join('
+')
+								apiText = before + '
+' + jsonStr + '
+' + after
+								await writeFile(apiPath, apiText)
+							}
+						}
+
 						// update timestamp only for files already in cache
 						if (prev.hash) {
 							content.updated = `${dateStr} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`

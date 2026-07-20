@@ -11,12 +11,13 @@
     "charCount": 25181
   },
   "posts/2026/Pwn-ret2reg": {
-    "hash": "592b1914496eae4c0ab5f61a5af72cb4efac4f745ceeed6ca3f93d869d760663",
+    "hash": "6dd48a7016cc35f823044c084f4517e3dac8d2ce0ae6b196a6d6847221078a76",
     "headings": [
       "Pwn-ret2reg",
-      "ret2reg32"
+      "ret2reg32",
+      "ret2reg_v2"
     ],
-    "charCount": 6386
+    "charCount": 8701
   },
   "posts/2026/Pwn-Stack_Feeding": {
     "hash": "b36ff6d5494d5ffbe90f2163d5a3f618821de8b75caa8c7c8a1b81290c99f385",
@@ -27,13 +28,14 @@
     "charCount": 17628
   },
   "posts/2026/HACKED的pwn脚本工具": {
-    "hash": "61a35cbaa0ca3f503a11383e380e63b7aa51fc0f8dc207007b73772453b07504",
+    "hash": "647845e66c83136958e671a462339bef72197f62d5c5866a6f0c0f3108c3fd5e",
     "headings": [
       "HACKED的pwn脚本工具",
       "前言",
-      "pwn-libc快速识别和下载绑定脚本-PWN_LIBC_TOOL v2.0",
-      "syscall地址查询-PWN_SYSCALL_TOOL "
+      "pwn-libc快速识别和下载绑定脚本-PWN_LIBC_TOOL",
+      "2.syscall地址查询-PWN_SYSCALL_TOOL ",
+      "3.程序汇编分析ret2reg"
     ],
-    "charCount": 10274
+    "charCount": 15574
   }
 }
