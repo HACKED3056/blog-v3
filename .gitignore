@@ -27,3 +27,4 @@ logs
 .vercel
 content/posts/test.md
 # Content hash cache
+.content-cache.json

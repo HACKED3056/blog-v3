@@ -248,7 +248,7 @@ ${packageJson.homepage}
 						// 记录新增标题到 edit-log（仅对已有文章的编辑）
 						const newHeadings = headings.filter(h => !prev.headings.includes(h)); const newH2 = newHeadings.length
 						const charGrowth = Math.max(0, charCount - prev.charCount)
-						const hasGrowth = !isNewFile && newH2 > 0
+						const hasGrowth = !isNewFile && newH2 > 0 && charGrowth > 50
 
 						if (hasGrowth) {
 							const logPath = resolve(process.cwd(), 'edit-log.json')
