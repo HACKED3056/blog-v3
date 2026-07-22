@@ -7,7 +7,7 @@ const basicConfig = {
 	description: "无论路途多么遥远，我们终将在旅途尽头再次相遇",
 	author: {
 		name: "HACKED",
-		avatar: "https://q1.qlogo.cn/g?b=qq&nk=3255154997&s=640",
+		avatar: "https://foruda.gitee.com/avatar/1782995786228285340/15786671_asus_hacked_1782995786.png",
 	title: "ss0t_HACKED",
 	desc: "一个刚刚入门的pwner，大手子ddw",
 		email: "ss0t_HACKED@qq.com",
@@ -18,7 +18,7 @@ const basicConfig = {
 		name: "署名-非商业性使用-相同方式共享 4.0 国际",
 		url: "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans",
 	},
-	favicon: "https://q1.qlogo.cn/g?b=qq&nk=3255154997&s=640",
+	favicon: "https://foruda.gitee.com/avatar/1782995786228285340/15786671_asus_hacked_1782995786.png",
 	language: "zh-CN",
 	timeEstablished: "2026-05-17",
 	timeZone: "Asia/Shanghai",
@@ -96,12 +96,12 @@ const blogConfig = {
 
 /** 用于生成 OPML 和友链页面配置 */
 export const myFeed: FeedEntry = {
-	author: blogConfig.author.name,
+	author: "HACKED的博客",
 	link: blogConfig.url,
 	feed: new URL("/atom.xml", blogConfig.url).toString(),
 	icon: blogConfig.favicon,
-	avatar: "https://q1.qlogo.cn/g?b=qq&nk=3255154997&s=640",
-	title: "ss0t_HACKED",
+	avatar: "https://foruda.gitee.com/avatar/1782995786228285340/15786671_asus_hacked_1782995786.png",
+	title: "HACKED的博客",
 	desc: "一个刚刚入门的pwner，大手子ddw",
 	archs: ["Nuxt", "Vercel"],
 	date: blogConfig.timeEstablished,
